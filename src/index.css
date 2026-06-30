@@ -1,0 +1,15 @@
+@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Khmer OS Siemreap';
+  src: url('./assets/fonts/KhmerOS_siemreap.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: 'Khmer OS Siemreap', sans-serif;
+}
