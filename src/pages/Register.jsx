@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router'; // 💡 ប្រើប្រាស់ react-router ដូច Login
+import { useState, useRef } from 'react';
+import { useNavigate, Link } from 'react-router'; 
 
 const CAMBODIA_PROVINCES = [
     { km: "ភ្នំពេញ", en: "Phnom Penh" },
@@ -31,9 +31,13 @@ const CAMBODIA_PROVINCES = [
 
 const Register = () => {
     const navigate = useNavigate();
+    const fileInputRef = useRef(null); 
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    
+    const [profileFile, setProfileFile] = useState(null);
+    const [imagePreview, setImagePreview] = useState('');
 
     const [formData, setFormData] = useState({
         username: '',
@@ -42,8 +46,7 @@ const Register = () => {
         role: 'FARMER',
         fullName: '',
         phone: '',
-        province: 'Phnom Penh',
-        profileImage: ''
+        province: 'Phnom Penh'
     });
 
     const handleChange = (e) => {
@@ -54,6 +57,14 @@ const Register = () => {
         }));
     };
 
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setProfileFile(file);
+            setImagePreview(URL.createObjectURL(file));
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -61,12 +72,19 @@ const Register = () => {
         setSuccessMessage('');
 
         try {
+            const submissionData = new FormData();
+            
+            Object.keys(formData).forEach(key => {
+                submissionData.append(key, formData[key]);
+            });
+
+            if (profileFile) {
+                submissionData.append('profileImage', profileFile);
+            }
+
             const response = await fetch('http://localhost:2829/api/v1/auth/register', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
+                body: submissionData 
             });
 
             const data = await response.json();
@@ -96,45 +114,35 @@ const Register = () => {
     return (
         <div className="min-h-screen w-full flex bg-slate-50 font-sans">
             
-            {/* 🟢 ផ្នែកខាងឆ្វេង៖ ផ្ទាំងរូបភាពលម្អ (ដូច Login Form ទាំងស្រុង) */}
-           <div
-  className="hidden lg:block lg:w-[55%] relative overflow-hidden bg-cover bg-center"
-  style={{
-    backgroundImage: "url('/images/farmer.jpg')", // Your image path
-  }}
->
-  {/* Dark Overlay */}
-  <div className="absolute inset-0 bg-black/50"></div>
+            {/* ផ្នែកខាងឆ្វេង៖ ផ្ទាំងរូបភាពលម្អ */}
+            <div
+                className="hidden lg:block lg:w-[55%] relative overflow-hidden bg-cover bg-center"
+                style={{ backgroundImage: "url('/images/farmer.jpg')" }}
+            >
+                <div className="absolute inset-0 bg-black/50"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                <div className="absolute inset-0 flex flex-col justify-between p-16 text-white z-10 max-w-2xl">
+                    <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full w-max text-xs font-bold tracking-wider uppercase border border-white/10">
+                        វេទិកាទំនើបសម្រាប់កសិករខ្មែរ
+                    </div>
+                    <div className="space-y-4 mb-8">
+                        <h1 className="text-4xl font-extrabold tracking-tight leading-tight xl:text-5xl">
+                            ប្រព័ន្ធគ្រប់គ្រង និងចែកចាយ <br />
+                            ផលិតផលកសិកម្មជាតិ
+                        </h1>
+                        <p className="text-emerald-100/80 font-medium leading-relaxed max-w-md text-sm xl:text-base">
+                            ចូលរួមជាមួយបណ្តាញកសិកម្មវៃឆ្លាត ដើម្បីពង្រីកសក្តានុពលទីផ្សារ
+                            និងបង្កើនប្រាក់ចំណូលរបស់អ្នកប្រកបដោយចីរភាព។
+                        </p>
+                    </div>
+                    <p className="text-xs text-gray-300">
+                        © 2026 ផ្សារកសិករ (Farmer Marketplace). រក្សាសិទ្ធិគ្រប់យ៉ាង។
+                    </p>
+                </div>
+            </div>
 
-  {/* Gradient Overlay */}
-  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-
-  <div className="absolute inset-0 flex flex-col justify-between p-16 text-white z-10 max-w-2xl">
-    <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full w-max text-xs font-bold tracking-wider uppercase border border-white/10">
-      វេទិកាទំនើបសម្រាប់កសិករខ្មែរ
-    </div>
-
-    <div className="space-y-4 mb-8">
-      <h1 className="text-4xl font-extrabold tracking-tight leading-tight xl:text-5xl">
-        ប្រព័ន្ធគ្រប់គ្រង និងចែកចាយ <br />
-        ផលិតផលកសិកម្មជាតិ
-      </h1>
-
-      <p className="text-emerald-100/80 font-medium leading-relaxed max-w-md text-sm xl:text-base">
-        ចូលរួមជាមួយបណ្តាញកសិកម្មវៃឆ្លាត ដើម្បីពង្រីកសក្តានុពលទីផ្សារ
-        និងបង្កើនប្រាក់ចំណូលរបស់អ្នកប្រកបដោយចីរភាព។
-      </p>
-    </div>
-
-    <p className="text-xs text-gray-300">
-      © 2026 ផ្សារកសិករ (Farmer Marketplace). រក្សាសិទ្ធិគ្រប់យ៉ាង។
-    </p>
-  </div>
-</div>
-
-            {/* 🟢 ផ្នែកខាងស្តាំ៖ Form ចុះឈ្មោះ (រៀបចំឱ្យត្រូវគ្នាជាមួយ Form ចូលប្រើប្រាស់) */}
+            {/* ផ្នែកខាងស្តាំ៖ Form ចុះឈ្មោះ */}
             <div className="w-full lg:w-[45%] flex flex-col justify-center px-6 py-12 sm:px-12 lg:px-16 bg-white relative z-10 shadow-2xl lg:shadow-none overflow-y-auto">
-                
                 <div className="mx-auto w-full max-w-md space-y-7 animate-fadeIn my-auto">
                     
                     {/* Header */}
@@ -150,13 +158,11 @@ const Register = () => {
                     {/* Alerts */}
                     {successMessage && (
                         <div className="bg-emerald-50 text-emerald-600 text-xs sm:text-sm p-4 rounded-xl border border-emerald-100 flex items-start gap-2.5 shadow-sm">
-                            <span className="text-base mt-0.5"></span>
                             <div className="font-semibold">{successMessage}</div>
                         </div>
                     )}
                     {errorMessage && (
                         <div className="bg-red-50 text-red-600 text-xs sm:text-sm p-4 rounded-xl border border-red-100 flex items-start gap-2.5 shadow-sm animate-shake">
-                            <span className="text-base mt-0.5"></span>
                             <div className="font-semibold">{errorMessage}</div>
                         </div>
                     )}
@@ -204,6 +210,39 @@ const Register = () => {
                             </h3>
                             
                             <div className="space-y-3">
+                                {/* ផ្នែកជ្រើសរើសនិងបង្ហាញរូបភាពកែប្រែថ្មីនៅទីនេះ */}
+                                <div className="space-y-1">
+                                    <label className="block text-xs font-bold text-slate-500 tracking-wider uppercase">រូបភាពប្រវត្តិរូប (Profile Image)</label>
+                                    <div className="flex items-center gap-4 mt-2 p-3 border border-dashed border-slate-200 rounded-xl bg-slate-50/50">
+                                        <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-slate-200 flex-shrink-0 border border-slate-100">
+                                            {imagePreview ? (
+                                                <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs text-center font-bold px-1 bg-slate-100">
+                                                    គ្មានរូបភាព
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="flex flex-col gap-1 w-full">
+                                            <input 
+                                                type="file" 
+                                                ref={fileInputRef}
+                                                accept="image/*"
+                                                onChange={handleFileChange} 
+                                                className="hidden" 
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => fileInputRef.current.click()}
+                                                className="w-max px-3 py-1.5 bg-white border border-slate-200 hover:border-emerald-500 text-slate-700 hover:text-emerald-600 rounded-lg text-xs font-bold shadow-sm transition"
+                                            >
+                                                ជ្រើសរើសរូបភាព...
+                                            </button>
+                                            <p className="text-[10px] text-slate-400">គាំទ្រប្រភេទឯកសារ PNG, JPG ឬ JPEG</p>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     <div className="space-y-1">
                                         <label className="block text-xs font-bold text-slate-500 tracking-wider uppercase">ឈ្មោះពេញ</label>
@@ -224,11 +263,6 @@ const Register = () => {
                                             </option>
                                         ))}
                                     </select>
-                                </div>
-
-                                <div className="space-y-1">
-                                    <label className="block text-xs font-bold text-slate-500 tracking-wider uppercase">តំណភ្ជាប់រូបភាពប្រវត្តិរូប (Profile URL)</label>
-                                    <input type="url" name="profileImage" value={formData.profileImage} onChange={handleChange} placeholder="https://example.com/avatar.jpg" className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition bg-slate-50/50 focus:bg-white text-slate-800 text-sm font-medium" />
                                 </div>
                             </div>
                         </div>
@@ -252,7 +286,7 @@ const Register = () => {
                                 ) : (
                                     <>
                                         <span>ចុះឈ្មោះបង្កើតគណនី</span>
-                                        <span className="text-xs">➔</span>
+                                        <span className="text-xs"></span>
                                     </>
                                 )}
                             </button>
