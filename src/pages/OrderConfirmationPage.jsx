@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
+import { useTranslation } from "react-i18next";
 
 const OrderConfirmationPage = () => {
+    const { t } = useTranslation();
     const { orderId } = useParams();
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -91,7 +93,7 @@ const OrderConfirmationPage = () => {
         return (
             <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
                 <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
-                <p className="mt-4 text-slate-500 font-medium text-sm animate-pulse">កំពុងផ្ទុកព័ត៌មានបញ្ជាទិញ...</p>
+                <p className="mt-4 text-slate-500 font-medium text-sm animate-pulse">{t("loadingOrder")}</p>
             </div>
         );
     }
@@ -101,7 +103,7 @@ const OrderConfirmationPage = () => {
             <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
                 <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 max-w-sm w-full text-center">
                     <p className="text-red-500 font-semibold text-sm">{error}</p>
-                    <Link to="/" className="mt-5 inline-block text-xs font-bold text-slate-500 hover:text-slate-800 underline">ត្រឡប់ទៅទំព័រដើម</Link>
+                    <Link to="/" className="mt-5 inline-block text-xs font-bold text-slate-500 hover:text-slate-800 underline">{t("backHome")}</Link>
                 </div>
             </div>
         );
@@ -120,17 +122,17 @@ const OrderConfirmationPage = () => {
                             <div className="w-16 h-16 bg-emerald-500 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-lg shadow-emerald-200">
                                 ✓
                             </div>
-                            <h1 className="text-2xl font-black text-slate-800 tracking-tight">ការទូទាត់ប្រាក់ជោគជ័យ</h1>
+                            <h1 className="text-2xl font-black text-slate-800 tracking-tight">{t("paymentSuccess")}</h1>
                             <p className="text-emerald-600 font-semibold text-sm mt-1.5">ប្រព័ន្ធបានទទួលប្រាក់របស់អ្នករួចរាល់ហើយ</p>
                         </div>
                     ) : (
                         <div>
                             <div className="inline-flex items-center space-x-1 bg-amber-50 px-3 py-1 rounded-full mb-3 text-[11px] font-bold text-amber-700 tracking-wide uppercase border border-amber-100">
                                 <span className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse"></span>
-                                <span>Pending Payment</span>
+                                <span>{t("paymentPending")}</span>
                             </div>
-                            <h1 className="text-2xl font-black text-slate-800 tracking-tight">ពិនិត្យ និងទូទាត់ប្រាក់</h1>
-                            <p className="text-slate-400 text-xs font-medium mt-1">សូមពិនិត្យព័ត៌មានបញ្ជាទិញ និងស្កេនកូដខាងក្រោម</p>
+                            <h1 className="text-2xl font-black text-slate-800 tracking-tight">{t("checkout")}</h1>
+                            <p className="text-slate-400 text-xs font-medium mt-1">{t("orderDetails")}</p>
                         </div>
                     )}
                 </div>
@@ -139,14 +141,14 @@ const OrderConfirmationPage = () => {
                 <div className="px-8 py-2">
                     <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100/80 space-y-3">
                         <div className="flex justify-between items-center text-xs">
-                            <span className="text-slate-400 font-medium">លេខបញ្ជាទិញ</span>
-                            <span className="font-mono font-bold text-slate-700 bg-white px-2.5 py-1 rounded-md border border-slate-200/60 shadow-sm">
+                            <span className="text-slate-400 font-medium">{t("orderNumber")}</span>
+                            <span className="font-bold text-slate-700 bg-white px-2.5 py-1 rounded-md border border-slate-200/60 shadow-sm">
                                 #{orderId}
                             </span>
                         </div>
                         <div className="h-[1px] bg-dashed bg-slate-200 w-full my-1"></div>
                         <div className="flex justify-between items-center">
-                            <span className="text-slate-500 font-medium text-sm">សរុបទឹកប្រាក់ត្រូវបង់</span>
+                            <span className="text-slate-500 font-medium text-sm">{t("amountDue")}</span>
                             <span className="font-black text-emerald-600 text-2xl tracking-tight">
                                 ${amount}
                             </span>

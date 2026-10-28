@@ -1,5 +1,6 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router'; 
+import { useTranslation } from "react-i18next";
 
 const CAMBODIA_PROVINCES = [
     { km: "ភ្នំពេញ", en: "Phnom Penh" },
@@ -30,14 +31,11 @@ const CAMBODIA_PROVINCES = [
 ];
 
 const Register = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
-    const fileInputRef = useRef(null); 
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
-    
-    const [profileFile, setProfileFile] = useState(null);
-    const [imagePreview, setImagePreview] = useState('');
 
     const [formData, setFormData] = useState({
         username: '',
@@ -57,14 +55,6 @@ const Register = () => {
         }));
     };
 
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setProfileFile(file);
-            setImagePreview(URL.createObjectURL(file));
-        }
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -72,19 +62,12 @@ const Register = () => {
         setSuccessMessage('');
 
         try {
-            const submissionData = new FormData();
-            
-            Object.keys(formData).forEach(key => {
-                submissionData.append(key, formData[key]);
-            });
-
-            if (profileFile) {
-                submissionData.append('profileImage', profileFile);
-            }
-
             const response = await fetch('http://localhost:2829/api/v1/auth/register', {
                 method: 'POST',
-                body: submissionData 
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
             });
 
             const data = await response.json();
@@ -112,7 +95,7 @@ const Register = () => {
     };
 
     return (
-        <div className="min-h-screen w-full flex bg-slate-50 font-sans">
+        <div className="min-h-screen w-full flex bg-slate-50">
             
             {/* ផ្នែកខាងឆ្វេង៖ ផ្ទាំងរូបភាពលម្អ */}
             <div
@@ -148,7 +131,7 @@ const Register = () => {
                     {/* Header */}
                     <div className="text-center lg:text-left">
                         <h2 className="text-3xl font-black text-slate-800 tracking-tight sm:text-4xl">
-                            ចុះឈ្មោះគណនី
+                            {t("register")}
                         </h2>
                         <p className="text-slate-500 text-sm mt-2 font-medium">
                             សូមបំពេញព័ត៌មានខាងក្រោមដើម្បីចូលរួមក្នុង <span className="text-emerald-600 font-semibold">ផ្សារកសិករ</span>។
@@ -210,39 +193,6 @@ const Register = () => {
                             </h3>
                             
                             <div className="space-y-3">
-                                {/* ផ្នែកជ្រើសរើសនិងបង្ហាញរូបភាពកែប្រែថ្មីនៅទីនេះ */}
-                                <div className="space-y-1">
-                                    <label className="block text-xs font-bold text-slate-500 tracking-wider uppercase">រូបភាពប្រវត្តិរូប (Profile Image)</label>
-                                    <div className="flex items-center gap-4 mt-2 p-3 border border-dashed border-slate-200 rounded-xl bg-slate-50/50">
-                                        <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-slate-200 flex-shrink-0 border border-slate-100">
-                                            {imagePreview ? (
-                                                <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
-                                            ) : (
-                                                <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs text-center font-bold px-1 bg-slate-100">
-                                                    គ្មានរូបភាព
-                                                </div>
-                                            )}
-                                        </div>
-                                        <div className="flex flex-col gap-1 w-full">
-                                            <input 
-                                                type="file" 
-                                                ref={fileInputRef}
-                                                accept="image/*"
-                                                onChange={handleFileChange} 
-                                                className="hidden" 
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => fileInputRef.current.click()}
-                                                className="w-max px-3 py-1.5 bg-white border border-slate-200 hover:border-emerald-500 text-slate-700 hover:text-emerald-600 rounded-lg text-xs font-bold shadow-sm transition"
-                                            >
-                                                ជ្រើសរើសរូបភាព...
-                                            </button>
-                                            <p className="text-[10px] text-slate-400">គាំទ្រប្រភេទឯកសារ PNG, JPG ឬ JPEG</p>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     <div className="space-y-1">
                                         <label className="block text-xs font-bold text-slate-500 tracking-wider uppercase">ឈ្មោះពេញ</label>

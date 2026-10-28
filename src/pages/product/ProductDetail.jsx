@@ -1,11 +1,37 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import ChatBox from '../../components/ChatBox';
+import { getAllProducts } from '../../api/auth.js';
+import { useTranslation } from "react-i18next";
 
 
 const ProductDetail = ({ product, onClose }) => {
-    if (!product) return null;
-
+    const { t } = useTranslation();
     const [activeChat, setActiveChat] = useState(false);
+    const [routeProduct, setRouteProduct] = useState(null);
+    const { id: routeId } = useParams();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (product || !routeId) return;
+        getAllProducts()
+            .then((products) => {
+                const foundProduct = Array.isArray(products)
+                    ? products.find((item) => String(item.id) === String(routeId))
+                    : null;
+                setRouteProduct(foundProduct || null);
+            })
+            .catch((error) => console.error("Error fetching product details:", error));
+    }, [routeId, product]);
+
+    const displayedProduct = product || routeProduct;
+    if (!displayedProduct) {
+        return (
+            <div className="mx-auto max-w-3xl px-5 py-20 text-center">
+                <p className="text-slate-500">{t("loading")}</p>
+            </div>
+        );
+    }
 
     const {
         id,
@@ -17,7 +43,7 @@ const ProductDetail = ({ product, onClose }) => {
         farmerId,
         farmerName,
         categoryName
-    } = product;
+    } = displayedProduct;
 
     // ទាញយកទិន្នន័យអ្នកប្រើប្រាស់ដែលកំពុង Login ជាប់ពី LocalStorage
     const savedUser = JSON.parse(localStorage.getItem('user'));
@@ -57,17 +83,17 @@ const ProductDetail = ({ product, onClose }) => {
                     <div className="space-y-4">
                         <div className="flex justify-between items-start gap-2">
                             <div>
-                                <span className="text-[10px] font-mono tracking-wider text-slate-400 block uppercase mb-0.5">
-                                    PRODUCT ID: #{id}
+                                <span className="text-[10px] tracking-wider text-slate-400 block uppercase mb-0.5">
+                                    {t("productId")}: #{id}
                                 </span>
                                 <h2 className="text-2xl font-bold text-slate-800 leading-tight">
                                     {name}
                                 </h2>
                             </div>
-                            <button 
-                                onClick={onClose} 
+                            <button
+                                onClick={onClose || (() => navigate("/product"))}
                                 className="text-slate-400 hover:text-slate-600 hover:bg-slate-100 w-8 h-8 rounded-full flex items-center justify-center transition font-bold text-sm cursor-pointer"
-                                aria-label="Close modal"
+                                aria-label={t("close")}
                             >
                                 X
                             </button>
@@ -76,24 +102,24 @@ const ProductDetail = ({ product, onClose }) => {
                         {/* Price & Stock Display */}
                         <div className="bg-emerald-50/60 border border-emerald-100 p-3.5 rounded-xl flex justify-between items-center">
                             <div>
-                                <p className="text-xs font-bold text-emerald-700/80 uppercase tracking-wider">តម្លៃលក់</p>
+                                <p className="text-xs font-bold text-emerald-700/80 uppercase tracking-wider">{t("subtotal")}</p>
                                 <p className="text-2xl font-black text-emerald-600 mt-0.5">
                                     ${Number(price).toFixed(2)}
                                 </p>
                             </div>
                             <div className="text-right">
-                                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">ចំនួនស្តុក</p>
+                                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t("stock")}</p>
                                 <p className={`text-base font-bold mt-1 ${quantity > 0 ? 'text-slate-800' : 'text-red-500'}`}>
-                                    {quantity > 0 ? `${quantity} គីឡូក្រាម` : 'អស់ពីស្តុក'}
+                                    {quantity > 0 ? t("inStock", { count: quantity }) : t("outOfStock")}
                                 </p>
                             </div>
                         </div>
 
 
                         <div className="space-y-1.5">
-                            <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">ព័ត៌មានលម្អិតពីផលិតផល</h4>
+                            <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t("productDetails")}</h4>
                             <p className="text-slate-600 text-sm leading-relaxed whitespace-pre-line bg-slate-50 p-3 rounded-xl border border-slate-100 max-h-32 overflow-y-auto">
-                                {description || "មិនមានការពិពណ៌នាបន្ថែមសម្រាប់កសិផលនេះទេ។"}
+                                {description || t("noDescription")}
                             </p>
                         </div>
 
@@ -103,7 +129,7 @@ const ProductDetail = ({ product, onClose }) => {
                                 onClick={() => setActiveChat(true)}
                                 className="w-full bg-emerald-700 hover:bg-emerald-600 text-white text-center py-3 rounded-xl font-bold text-sm shadow-sm transition active:scale-98 cursor-pointer"
                             >
-                                ផ្ញើសារទៅកាន់អ្នកលក់
+                                {t("sendMessage")}
                             </button>
                         )}
                     </div>
@@ -114,17 +140,17 @@ const ProductDetail = ({ product, onClose }) => {
                                     {farmerName.charAt(0)}
                                 </div>
                                 <div>
-                                    <p className="text-slate-400 font-medium text-[10px] uppercase">អ្នកផ្គត់ផ្គង់</p>
+                                    <p className="text-slate-400 font-medium text-[10px] uppercase">{t("supplier")}</p>
                                     <p className="font-bold text-slate-700">{farmerName}</p>
                                 </div>
                             </div>
                         )}
                         
                         <button 
-                            onClick={onClose}
+                            onClick={onClose || (() => navigate("/product"))}
                             className="bg-slate-900 hover:bg-slate-800 text-white font-bold px-5 py-2.5 rounded-xl transition shadow-xs cursor-pointer active:scale-98"
                         >
-                            បិទផ្ទាំងនេះ
+                            {t("close")}
                         </button>
                     </div>
 

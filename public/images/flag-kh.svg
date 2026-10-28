@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 20" role="img" aria-label="Cambodia flag">
+  <rect width="30" height="20" fill="#032ea1"/>
+  <rect y="3.3" width="30" height="13.4" fill="#e00025"/>
+  <g fill="#fff">
+    <!-- Angkor Wat central tower -->
+    <path d="M13.55 5.2h2.9v8.2h-2.9z"/>
+    <path d="M13.95 4.35h2.1v.95h-2.1z"/>
+    <path d="M14.35 3.55h1.3v.8h-1.3z"/>
+    <path d="M14.7 2.85h.6v.7h-.6z"/>
+    <!-- Angkor Wat side towers -->
+    <path d="M8.2 7.55h2.35v5.85H8.2z"/>
+    <path d="M8.55 6.85h1.65v.7H8.55z"/>
+    <path d="M8.85 6.25h1.05v.6H8.85z"/>
+    <path d="M19.45 7.55h2.35v5.85h-2.35z"/>
+    <path d="M19.8 6.85h1.65v.7H19.8z"/>
+    <path d="M20.1 6.25h1.05v.6H20.1z"/>
+    <!-- outer towers -->
+    <path d="M5.7 9.2h1.7v4.2H5.7z"/>
+    <path d="M6 8.55h1.1v.65H6z"/>
+    <path d="M22.6 9.2h1.7v4.2h-1.7z"/>
+    <path d="M22.9 8.55H24v.65h-1.1z"/>
+    <!-- temple galleries and steps -->
+    <path d="M4.6 12.35h20.8v1.35H4.6z"/>
+    <path d="M3.55 13.7h22.9v1.15H3.55z"/>
+    <path d="M2.4 14.85h25.2v.95H2.4z"/>
+    <path d="M1.5 15.8h27v.55h-27z"/>
+    <!-- doorway and gallery openings -->
+    <path d="M14.15 11.25h1.7v2.45h-1.7z" fill="#e00025"/>
+    <path d="M9 10.1h.75v2.2H9zm2 0h.75v2.2H11zm7.25 0H19v2.2h-.75zm2 0H21v2.2h-.75z" fill="#e00025"/>
+  </g>
+</svg>

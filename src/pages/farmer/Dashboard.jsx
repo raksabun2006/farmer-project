@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getAllProducts } from '../../api/auth';
 import PostProductCard from '../../components/PostProductCard';
+import { useTranslation } from "react-i18next";
 
 const CAMBODIA_PROVINCES = [
     "ភ្នំពេញ (Phnom Penh)",
@@ -31,6 +32,7 @@ const CAMBODIA_PROVINCES = [
 ];
 
 const Dashboard = () => {
+    const { t } = useTranslation();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
@@ -154,7 +156,7 @@ const Dashboard = () => {
             localStorage.setItem('user', JSON.stringify({ ...savedUser, ...data }));
             
             setIsEditingProfile(false);
-            alert("កែប្រែប្រវត្តិរូបបានជោគជ័យ!");
+            alert(t("profileUpdated"));
         } catch (err) { 
             alert("បរាជ័យ៖ " + err.message); 
         } finally { 
@@ -186,7 +188,7 @@ const Dashboard = () => {
                 return String(id) !== String(productId);
             }));
             
-            alert("លុបផលិតផលបានជោគជ័យ!");
+            alert(t("deleteSuccess"));
         } catch (err) {
             alert("មិនអាចលុបបានទេ៖ " + err.message);
         }
@@ -259,9 +261,9 @@ const Dashboard = () => {
 
             {/* ================= 📦 ORDERS LIST SECTION ================= */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                <h3 className="text-xl font-bold text-slate-700 mb-4">បញ្ជីការបញ្ជាទិញពីអតិថិជន</h3>
+                <h3 className="text-xl font-bold text-slate-700 mb-4">{t("orders")}</h3>
                 {loadingOrders ? (
-                    <p>កំពុងផ្ទុក...</p>
+                    <p>{t("loading")}</p>
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse text-sm">
@@ -275,7 +277,7 @@ const Dashboard = () => {
                             <tbody>
                                 {orders.length > 0 ? orders.map((order) => (
                                     <tr key={order.id} className="border-t hover:bg-slate-50/50">
-                                        <td className="p-4 font-mono text-slate-600">#{order.id}</td>
+                                        <td className="p-4 text-slate-600">#{order.id}</td>
                                         <td className="p-4 font-bold text-slate-800">${order.totalAmount}</td>
                                         <td className="p-4">
                                             <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
@@ -312,7 +314,7 @@ const Dashboard = () => {
             <form onSubmit={handleProfileSubmit} className="space-y-4 text-sm">
   
                 <div>
-                    <label className="block text-xs font-bold text-slate-600 mb-1">ឈ្មោះពេញ (FULL NAME)</label>
+                    <label className="block text-xs font-bold text-slate-600 mb-1">{t("fullName")}</label>
                     <input 
                         type="text" 
                         value={profileFormData.fullName}
@@ -322,7 +324,7 @@ const Dashboard = () => {
                     />
                 </div>
                 <div>
-                    <label className="block text-xs font-bold text-slate-600 mb-1">លេខទូរស័ព្ទ (PHONE)</label>
+                    <label className="block text-xs font-bold text-slate-600 mb-1">{t("phone")}</label>
                     <input 
                         type="text" 
                         value={profileFormData.phone}
@@ -334,14 +336,14 @@ const Dashboard = () => {
 
                 {/* រាជធានី / ខេត្ត (PROVINCE) */}
                 <div>
-                    <label className="block text-xs font-bold text-slate-600 mb-1">រាជធានី / ខេត្ត (PROVINCE)</label>
+                    <label className="block text-xs font-bold text-slate-600 mb-1">{t("province")}</label>
                     <select 
                         value={profileFormData.province}
                         onChange={(e) => setProfileFormData({...profileFormData, province: e.target.value})}
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 focus:outline-emerald-500 font-medium text-slate-700"
                         required
                     >
-                        <option value="" disabled>--- សូមជ្រើសរើសខេត្ត ---</option>
+                        <option value="" disabled>--- {t("selectProvince")} ---</option>
                         {CAMBODIA_PROVINCES.map((province, index) => (
                             <option key={index} value={province}>{province}</option>
                         ))}
@@ -350,7 +352,7 @@ const Dashboard = () => {
 
                 {/* MODIFIED: Local Device Storage File Selector Layout with Preview Circle for Profile Images */}
                 <div>
-                    <label className="block text-xs font-bold text-slate-600 mb-1">រូបភាពប្រវត្តិរូប (PROFILE IMAGE)</label>
+                    <label className="block text-xs font-bold text-slate-600 mb-1">{t("profile")}</label>
                     <div className="flex items-center gap-4 p-3 border border-slate-200 rounded-xl bg-slate-50/50">
                         
                         {/* Circle Avatar Profile Sandbox Preview Window */}
@@ -395,7 +397,7 @@ const Dashboard = () => {
                                 }}
                                 className="text-xs file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer w-full"
                             />
-                            <p className="text-[10px] text-slate-400 mt-1">គាំទ្រប្រភេទ PNG, JPG ទំហំអតិបរមា 2MB</p>
+                            <p className="text-[10px] text-slate-400 mt-1">{t("imageHelp")}</p>
                         </div>
                     </div>
                 </div>
@@ -428,7 +430,7 @@ const Dashboard = () => {
                     <h1 className="text-2xl md:text-3xl font-bold tracking-wide flex items-center gap-2">
                          ផ្ទាំងគ្រប់គ្រងកសិផល
                     </h1>
-                    <p className="text-emerald-100/90 text-sm mt-1">គ្រប់គ្រងផលិតផល និងតម្លៃកសិផលរបស់អ្នកឱ្យបានរហ័ស</p>
+                    <p className="text-emerald-100/90 text-sm mt-1">{t("manageProducts")}</p>
                 </div>
                 
                 {userProfile.role === 'FARMER' && (
@@ -449,8 +451,8 @@ const Dashboard = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     <div className="bg-white border border-slate-100 p-5 rounded-xl shadow-sm flex items-center gap-4">
                         <div>
-                            <p className="text-sm text-slate-500 font-medium">ផលិតផលសរុបរបស់អ្នក</p>
-                            <p className="text-2xl font-bold text-slate-800">{myProducts.length} មុខ</p>
+                            <p className="text-sm text-slate-500 font-medium">{t("totalProducts")}</p>
+                            <p className="text-2xl font-bold text-slate-800">{myProducts.length}</p>
                         </div>
                     </div>
                 </div>
@@ -478,13 +480,13 @@ const Dashboard = () => {
                 {loading ? (
                     <div className="text-center py-20 bg-white rounded-xl border border-slate-100 shadow-sm flex flex-col items-center justify-center gap-3">
                         <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
-                        <p className="text-slate-500 font-medium">កំពុងផ្ទុកទិន្នន័យផលិតផល...</p>
+                        <p className="text-slate-500 font-medium">{t("loading")}</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {myProducts.length === 0 ? (
                             <div className="col-span-full text-center py-16 bg-white rounded-xl border border-dashed border-slate-300 text-slate-400">
-                                <p className="font-medium">មិនទាន់មានផលិតផលនៅក្នុងបញ្ជីនៅឡើយទេ</p>
+                                <p className="font-medium">{t("noProductsYet")}</p>
                             </div>
                         ) : (
                             myProducts.map((prod) => {
@@ -509,7 +511,7 @@ const Dashboard = () => {
                                             <div className="flex justify-between items-end pt-2 border-t border-slate-50">
                                                 <div>
                                                     <p className="text-xl font-extrabold text-emerald-600">{Number(prod.price).toLocaleString()} $</p>
-                                                    <p className="text-[11px] text-slate-400">ស្តុក៖ {prod.quantity || 0}</p>
+                                                    <p className="text-[11px] text-slate-400">{t("inStock", { count: prod.quantity || 0 })}</p>
                                                 </div>
                                                 <button 
                                                     onClick={() => handleDeleteProduct(currentId)}

@@ -1,15 +1,46 @@
 @import "tailwindcss";
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
-@font-face {
-  font-family: 'Khmer OS Siemreap';
-  src: url('./assets/fonts/KhmerOS_siemreap.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
+:root {
+  font-family: "Khmer OS Siemreap", sans-serif;
+  color: #26332c;
+  background: #f8faf8;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  font-family: 'Khmer OS Siemreap', sans-serif;
+  font-family: inherit;
+  margin: 0;
+  min-width: 320px;
+  background: #f8faf8;
+  line-height: 1.75;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(22, 163, 74, 0.3);
+  outline-offset: 2px;
 }

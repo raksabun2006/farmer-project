@@ -1,4 +1,7 @@
+import { useTranslation } from "react-i18next";
+
 const ContactPage = () => {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-slate-50">
     
@@ -11,7 +14,7 @@ const ContactPage = () => {
           <div className="space-y-6">
             <div>
               <span className="text-emerald-700 font-semibold">
-                ព័ត៌មានទំនាក់ទំនង
+                {t("contactInfo")}
               </span>
 
               <h2 className="text-3xl font-bold text-slate-900 mt-2 mb-4">
@@ -56,7 +59,7 @@ const ContactPage = () => {
           <div className="bg-white rounded-3xl border border-slate-200 shadow-lg p-8">
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-slate-900">
-                ផ្ញើសារមកកាន់យើង
+                {t("sendUsMessage")}
               </h2>
 
               <p className="text-slate-600 mt-2">
@@ -67,19 +70,19 @@ const ContactPage = () => {
             <form className="space-y-5">
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  ឈ្មោះ
+                  {t("name")}
                 </label>
 
                 <input
                   type="text"
-                  placeholder="បញ្ចូលឈ្មោះរបស់អ្នក"
+                  placeholder={t("namePlaceholder")}
                   className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  អ៊ីមែល
+                  {t("email")}
                 </label>
 
                 <input
@@ -91,24 +94,24 @@ const ContactPage = () => {
 
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  ប្រធានបទ
+                  {t("subject")}
                 </label>
 
                 <input
                   type="text"
-                  placeholder="ប្រធានបទសារ"
+                  placeholder={t("subjectPlaceholder")}
                   className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  សារ
+                  {t("message")}
                 </label>
 
                 <textarea
                   rows="6"
-                  placeholder="សរសេរសាររបស់អ្នក..."
+                  placeholder={t("messagePlaceholder")}
                   className="w-full px-4 py-3 border border-slate-300 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
@@ -117,7 +120,7 @@ const ContactPage = () => {
                 type="submit"
                 className="w-full bg-emerald-700 hover:bg-emerald-800 text-white py-4 rounded-xl font-semibold transition-all duration-300"
               >
-                ផ្ញើសារ
+                {t("send")}
               </button>
             </form>
           </div>

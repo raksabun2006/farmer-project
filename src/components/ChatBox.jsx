@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from "react-i18next";
 
 const ChatBox = ({ currentUserId, receiverId, receiverName, onClose }) => {
+    const { t } = useTranslation();
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const [loading, setLoading] = useState(false);
@@ -61,7 +63,7 @@ const ChatBox = ({ currentUserId, receiverId, receiverName, onClose }) => {
             setNewMessage("");
         } catch (err) {
             console.error("Error sending message:", err);
-            alert("មិនអាចផ្ញើសារចេញបានទេ សូមព្យាយាមម្តងទៀត");
+            alert(t("networkError"));
         }
     };
 
@@ -78,7 +80,7 @@ const ChatBox = ({ currentUserId, receiverId, receiverName, onClose }) => {
                         <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-400 border-2 border-emerald-800 rounded-full animate-pulse" />
                     </div>
                     <div>
-                        <span className="text-[10px] text-emerald-200 uppercase font-black tracking-wider block">ប្រព័ន្ធសាកសួរ</span>
+                        <span className="text-[10px] text-emerald-200 uppercase font-black tracking-wider block">{t("contact")}</span>
                         <h3 className="font-extrabold text-sm text-white truncate max-w-[180px] md:max-w-[220px]">{receiverName || "កសិករខ្មែរ"}</h3>
                     </div>
                 </div>
@@ -97,7 +99,7 @@ const ChatBox = ({ currentUserId, receiverId, receiverName, onClose }) => {
                 {loading ? (
                     <div className="h-full flex flex-col items-center justify-center text-slate-400 gap-2">
                         <div className="w-6 h-6 border-2 border-emerald-700 border-t-transparent rounded-full animate-spin"></div>
-                        <span className="text-xs font-bold tracking-wide">កំពុងផ្ទុកសារ...</span>
+                        <span className="text-xs font-bold tracking-wide">{t("loading")}</span>
                     </div>
                 ) : messages.length === 0 ? (
                     <div className="h-full flex flex-col items-center justify-center text-slate-400 text-center px-6 gap-3">
@@ -122,7 +124,7 @@ const ChatBox = ({ currentUserId, receiverId, receiverName, onClose }) => {
                                 }`}>
                                     {msg.content}
                                 </div>
-                                <span className="text-[9px] text-slate-400 mt-1 px-1.5 font-sans">
+                                <span className="text-[9px] text-slate-400 mt-1 px-1.5">
                                     {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                 </span>
                             </div>
@@ -138,7 +140,7 @@ const ChatBox = ({ currentUserId, receiverId, receiverName, onClose }) => {
                     type="text" 
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    placeholder="វាយសាររបស់អ្នកនៅទីនេះ..."
+                    placeholder={t("messagePlaceholder")}
                     className="flex-1 border border-slate-100 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-700/5 font-medium bg-slate-50 transition"
                 />
                 <button 

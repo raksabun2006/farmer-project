@@ -1,8 +1,10 @@
 import { Navigate } from "react-router";
 import { useAuth } from "../context/AuthContext.jsx";
+import { useTranslation } from "react-i18next";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, loading } = useAuth();
+  const { t } = useTranslation();
 
   // 1. Show a loading screen while checking localStorage for an active session
   if (loading) {
@@ -11,7 +13,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
         <div className="flex flex-col items-center gap-3">
           <span className="text-4xl animate-bounce">🌾</span>
           <p className="text-emerald-700 font-medium tracking-wide">
-            កំពុងពិនិត្យសិទ្ធិចូលប្រើប្រាស់...
+            {t("loading")}
           </p>
         </div>
       </div>

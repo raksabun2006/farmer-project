@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom"; 
+import { useTranslation } from "react-i18next";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 
 const CartPage = () => {
+  const { t } = useTranslation();
   const { cart, updateQty, clearCart } = useCart();
   const { user } = useAuth(); 
   const navigate = useNavigate();
@@ -15,13 +17,13 @@ const CartPage = () => {
 
   const handleFinalCheckout = async () => {
     if (!user) {
-      alert("សូមចូលក្នុងប្រព័ន្ធជាមុនសិន!");
+      alert(t("mustLogin"));
       navigate("/login");
       return;
     }
 
     if (cart.length === 0) {
-      alert("កន្ត្រកទំនិញរបស់អ្នកទទេស្អាត។");
+      alert(t("emptyCart"));
       return;
     }
 
@@ -49,20 +51,20 @@ const CartPage = () => {
         if (clearCart) clearCart(); 
         navigate(`/order-confirmation/${data.id || ""}`);
       } else {
-        alert("បរាជ័យក្នុងការបញ្ជាទិញ: " + (data.message || "សូមពិនិត្យទិន្នន័យឡើងវិញ"));
+        alert(t("orderFailed", { message: data.message || t("networkError") }));
       }
     } catch (error) {
       console.error("Network error:", error);
-      alert("មិនអាចតភ្ជាប់ទៅកាន់ម៉ាស៊ីនមេបានទេ។");
+      alert(t("networkError"));
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12 font-sans min-h-[70vh]">
+    <div className="max-w-6xl mx-auto px-4 py-12 min-h-[70vh]">
       <h1 className="text-3xl font-black text-slate-800 mb-8 border-b border-slate-100 pb-4">
-        ពិនិត្យកន្ត្រកទំនិញ <span className="text-emerald-600 text-lg font-bold">({cart.length} មុខ)</span>
+        {t("checkout")} <span className="text-emerald-600 text-lg font-bold">({cart.length})</span>
       </h1>
       
       {cart.length === 0 ? (
@@ -73,14 +75,14 @@ const CartPage = () => {
             </svg>
           </div>
           <div className="space-y-2">
-            <h3 className="text-xl font-bold text-slate-800">កន្ត្រកទំនិញរបស់អ្នកទទេស្អាត</h3>
-            <p className="text-slate-400 text-sm">មិនទាន់មានទំនិញនៅក្នុងកន្ត្រករបស់អ្នកនៅឡើយទេ។</p>
+            <h3 className="text-xl font-bold text-slate-800">{t("cartEmpty")}</h3>
+            <p className="text-slate-400 text-sm">{t("cartEmptyText")}</p>
           </div>
           <Link 
             to="/" 
             className="inline-block bg-emerald-800 hover:bg-emerald-700 text-white font-bold text-sm px-6 py-3 rounded-xl transition shadow-md"
           >
-            ទៅកាន់ទំព័រដើម
+            {t("backHome")}
           </Link>
         </div>
       ) : (
@@ -150,16 +152,16 @@ const CartPage = () => {
             
             <div className="space-y-4 text-sm font-semibold text-slate-500">
               <div className="flex justify-between">
-                <span>តម្លៃសរុបទំនិញ</span>
+                <span>{t("subtotal")}</span>
                 <span className="text-slate-800">${subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
-                <span>ថ្លៃសេវាដឹកជញ្ជូន</span>
+                <span>{t("deliveryFee")}</span>
                 <span className="text-slate-800">${deliveryFee.toFixed(2)}</span>
               </div>
               
               <div className="border-t border-dashed border-slate-200 pt-4 flex justify-between items-center">
-                <span className="text-base text-slate-800 font-bold">ទឹកប្រាក់សរុប</span>
+                <span className="text-base text-slate-800 font-bold">{t("total")}</span>
                 <span className="text-2xl font-black text-emerald-600">${total.toFixed(2)}</span>
               </div>
             </div>
@@ -174,9 +176,9 @@ const CartPage = () => {
               }`}
             >
               {isSubmitting ? (
-                <span className="animate-pulse">កំពុងដំណើរការបញ្ជាទិញ...</span>
+                <span className="animate-pulse">{t("processingOrder")}</span>
               ) : (
-                <span>ទិញឥឡូវនេះ</span>
+                <span>{t("buyNow")}</span>
               )}
             </button>
             

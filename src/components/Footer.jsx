@@ -1,55 +1,55 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const Footer = () => {
+  const { t } = useTranslation();
   return (
-    <footer className="bg-slate-900 text-gray-300 border-t-8 border-emerald-700 mt-auto">
-      <div className="container mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
+    <footer className="mt-16 border-t border-emerald-100 bg-[#173b2a] text-emerald-50">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-5 py-12 md:grid-cols-3 md:px-8">
 
         {/* About Section */}
         <div className="space-y-3">
           <h2 className="text-lg font-bold text-white tracking-wide">
-            ទីផ្សារឌីជីថលកម្ពុជា
+            {t("brand")} {t("country")}
           </h2>
           <p className="text-sm text-gray-400 leading-relaxed">
-            វេទិកាឌីជីថលសម្រាប់ជួយកសិករកម្ពុជា ក្នុងការផ្សព្វផ្សាយ និងលក់
-            ផលិតផលកសិកម្មដោយផ្ទាល់ទៅកាន់អតិថិជន។ គាំទ្រផលិតផលកសិកម្មខ្មែរ
-            និងរួមចំណែកលើកកម្ពស់សេដ្ឋកិច្ចកសិកម្មកម្ពុជា។
+            {t("tagline")}.
           </p>
         </div>
 
         {/* Navigation Links */}
         <div>
           <h3 className="text-white font-semibold mb-3 border-b border-gray-700 pb-1 text-sm uppercase text-emerald-400 tracking-wider">
-            តំណភ្ជាប់
+            {t("products")}
           </h3>
           <ul className="space-y-2 text-sm">
             <li>
-              <Link to="/" className="hover:text-amber-400 transition duration-300">
-                ទំព័រដើម
+              <Link to="/" className="transition hover:text-[#f2bd4b]">
+                {t("home")}
               </Link>
             </li>
             <li>
               <Link
                 to="/product"
-                className="hover:text-amber-400 transition duration-300"
+                className="transition hover:text-[#f2bd4b]"
               >
-                ផលិតផលកសិកម្ម
+                {t("products")}
               </Link>
             </li>
             <li>
               <Link
                 to="/about"
-                className="hover:text-amber-400 transition duration-300"
+                className="transition hover:text-[#f2bd4b]"
               >
-                អំពីយើង
+                {t("about")}
               </Link>
             </li>
             <li>
               <Link
                 to="/contact"
-                className="hover:text-amber-400 transition duration-300"
+                className="transition hover:text-[#f2bd4b]"
               >
-                ទំនាក់ទំនង
+                {t("contact")}
               </Link>
             </li>
           </ul>
@@ -58,7 +58,7 @@ const Footer = () => {
         {/* Contact Information */}
         <div>
           <h3 className="text-white font-semibold mb-3 border-b border-gray-700 pb-1 text-sm uppercase text-emerald-400 tracking-wider">
-            អ្នកអភិវឌ្ឍន៍ប្រព័ន្ធ
+            {t("contactInfo")}
           </h3>
           <ul className="space-y-2 text-sm text-gray-400">
             <li>
@@ -77,13 +77,8 @@ const Footer = () => {
       </div>
 
       {/* Copyright */}
-      <div className="bg-slate-950 py-4 border-t border-gray-800 text-center">
-        <p className="text-xs text-gray-500">
-          © {new Date().getFullYear()} Bun Raksa. រក្សាសិទ្ធិគ្រប់យ៉ាង។
-        </p>
-        <p className="text-xs text-gray-600 mt-1">
-          Developed by: Bun Raksa
-        </p>
+      <div className="border-t border-white/10 py-4 text-center text-xs text-emerald-200/70">
+        <p>© {new Date().getFullYear()} ផ្សារកសិកម្មកម្ពុជា · រក្សាសិទ្ធិគ្រប់យ៉ាង</p>
       </div>
     </footer>
   );

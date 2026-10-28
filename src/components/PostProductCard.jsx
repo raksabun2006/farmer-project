@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext'; 
+import { useTranslation } from "react-i18next";
 
 const PostProductCard = ({ onProductPosted }) => {
+    const { t } = useTranslation();
     const { user } = useAuth(); 
     const fileInputRef = useRef(null); // Ref to manually clear the file input field later
 
@@ -182,15 +184,15 @@ const PostProductCard = ({ onProductPosted }) => {
     return (
         <div className="max-w-2xl mx-auto bg-white rounded-2xl border border-slate-100 shadow-xl overflow-hidden">
             <div className="bg-gradient-to-r from-emerald-800 to-teal-700 p-6 text-white">
-                <h3 className="text-xl font-bold">Post New Product</h3>
-                <p className="text-emerald-100/80 text-xs mt-1">Fill in the product details to add it to your profile</p>
+                <h3 className="text-xl font-bold">{t("postProduct")}</h3>
+                <p className="text-emerald-100/80 text-xs mt-1">{t("manageProducts")}</p>
             </div>
 
             <form onSubmit={handleSubmit} className="p-6 space-y-5">
                 {isUserUnlinked && (
                     <div className="bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-xl text-xs">
-                        <p className="font-bold">System cannot identify your account</p>
-                        <p>The post button is temporarily locked until your account is verified.</p>
+                        <p className="font-bold">{t("accountUnavailable")}</p>
+                        <p>{t("accountUnavailableHelp")}</p>
                     </div>
                 )}
 
@@ -199,30 +201,30 @@ const PostProductCard = ({ onProductPosted }) => {
 
                 {/* Product Name */}
                 <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold text-slate-600 uppercase">Product Name</label>
+                    <label className="text-xs font-bold text-slate-600 uppercase">{t("productName")}</label>
                     <input type="text" name="name" required disabled={isUserUnlinked} value={formData.name} onChange={handleChange} className="p-3.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500" />
                 </div>
 
                 {/* Price & Quantity Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
-                        <label className="text-xs font-bold text-slate-600 uppercase">Price ($)</label>
+                        <label className="text-xs font-bold text-slate-600 uppercase">{t("price")}</label>
                         <input type="number" name="price" required disabled={isUserUnlinked} min="0" step="0.01" value={formData.price || ''} onChange={handleChange} className="p-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500" />
                     </div>
                     <div className="flex flex-col gap-1.5">
-                        <label className="text-xs font-bold text-slate-600 uppercase">Total Quantity</label>
+                        <label className="text-xs font-bold text-slate-600 uppercase">{t("quantity")}</label>
                         <input type="number" name="quantity" required disabled={isUserUnlinked} min="0" value={formData.quantity || ''} onChange={handleChange} className="p-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500" />
                     </div>
                 </div>
 
                 {/* Product Category Selection */}
                 <div className="flex flex-col gap-2">
-                    <label className="text-xs font-bold text-slate-600 uppercase">Product Category</label>
+                    <label className="text-xs font-bold text-slate-600 uppercase">{t("category")}</label>
                     
                     {categoriesLoading ? (
-                        <div className="text-xs text-slate-400 p-2 animate-pulse">Loading categories...</div>
+                        <div className="text-xs text-slate-400 p-2 animate-pulse">{t("loadingCategories")}</div>
                     ) : categories.length === 0 ? (
-                        <div className="text-xs text-slate-400 p-2">No categories available</div>
+                        <div className="text-xs text-slate-400 p-2">{t("noCategoriesAvailable")}</div>
                     ) : (
                         <div className="flex flex-wrap gap-2 pt-1">
                             {categories.map((cat) => {
@@ -249,7 +251,7 @@ const PostProductCard = ({ onProductPosted }) => {
 
                 {/* MODIFIED: Local Device File Image Upload Layout with Visual Sandbox Preview Panel */}
                 <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold text-slate-600 uppercase">Product Image</label>
+                    <label className="text-xs font-bold text-slate-600 uppercase">{t("productImage")}</label>
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 p-4 border border-dashed border-slate-200 rounded-xl bg-slate-50/50">
                         
                         {/* Live Image Preview Window */}
@@ -273,20 +275,20 @@ const PostProductCard = ({ onProductPosted }) => {
                                 onChange={handleFileChange} 
                                 className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer w-full"
                             />
-                            <p className="text-[10px] text-slate-400 mt-1.5">Accepts PNG, JPG, JPEG up to 2MB. Automatically converts locally on your device.</p>
+                            <p className="text-[10px] text-slate-400 mt-1.5">{t("imageHelp")}</p>
                         </div>
                     </div>
                 </div>
 
                 {/* Description */}
                 <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold text-slate-600 uppercase">Description</label>
+                    <label className="text-xs font-bold text-slate-600 uppercase">{t("description")}</label>
                     <textarea name="description" rows="3" disabled={isUserUnlinked} value={formData.description} onChange={handleChange} className="p-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500" />
                 </div>
 
                 {/* Submit Action Button */}
                 <button type="submit" disabled={loading || isUserUnlinked || categoriesLoading} className="w-full py-4 rounded-xl font-bold text-white bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 transition-colors cursor-pointer">
-                    {loading ? 'Saving...' : 'Post Product'}
+                    {loading ? t("loading") : t("submit")}
                 </button>
             </form>
         </div>

@@ -2,8 +2,10 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext.jsx";
 import { loginUser } from "../api/auth.js";
 import { Link, useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
 
 const Login = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -11,7 +13,7 @@ const Login = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // 💡 State សម្រាប់ បើក/បិទ មើលលេខសម្ងាត់
+  const [showPassword, setShowPassword] = useState(false);
   
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -23,15 +25,10 @@ const Login = () => {
 
     try {
         const data = await loginUser(formData);
-        
-        // Destructure context parameters ពី Spring Boot Auth Response
         const { token, username, role, id } = data;
-        
         if (!token) {
             throw new Error('No authentication token received from server.');
         }
-
-        // រក្សាទុកទិន្នន័យចូលទៅក្នុង App Context / LocalStorage
         login(token, { username, role, id }); 
         
         if (role === 'FARMER' || role === 'ROLE_FARMER') {
@@ -40,7 +37,7 @@ const Login = () => {
             navigate('/');
         }
     } catch (err) {
-        const fallbackMsg = 'ឈ្មោះអ្នកប្រើប្រាស់ ឬលេខសម្ងាត់មិនត្រឹមត្រូវឡើយ។';
+        const fallbackMsg = t("networkError");
         const serverMessage = err.response?.data?.message || err.message;
         setError(serverMessage && serverMessage !== "No message available" ? serverMessage : fallbackMsg);
     } finally {
@@ -49,7 +46,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex bg-slate-50 font-sans">
+    <div className="min-h-screen w-full flex bg-slate-50">
                   <div
   className="hidden lg:block lg:w-[55%] relative overflow-hidden bg-cover bg-center"
   style={{
@@ -97,10 +94,10 @@ const Login = () => {
               
             </div>
             <h2 className="text-3xl font-black text-slate-800 tracking-tight sm:text-4xl">
-              ចូលប្រើប្រាស់
+              {t("login")}
             </h2>
             <p className="text-slate-500 text-sm mt-2 font-medium">
-              ស្វាគមន៍មកកាន់ <span className="text-emerald-600 font-semibold">ផ្សារកសិករ</span> យើងខ្ញុំ! សូមបំពេញព័ត៌មានខាងក្រោម។
+              {t("tagline")}
             </p>
           </div>
 
@@ -118,7 +115,7 @@ const Login = () => {
             {/* Input: Username */}
             <div className="space-y-2">
               <label className="block text-xs font-bold text-slate-500 tracking-wider uppercase">
-                ឈ្មោះអ្នកប្រើប្រាស់ (Username)
+                {t("username")}
               </label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 text-sm">
@@ -128,7 +125,7 @@ const Login = () => {
                   type="text"
                   required
                   className="w-full pl-11 pr-4 py-3.5 border border-slate-200 rounded-xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition bg-slate-50/50 focus:bg-white text-slate-800 font-medium placeholder-slate-400 text-sm sm:text-base"
-                  placeholder="បញ្ចូលឈ្មោះអ្នកប្រើប្រាស់"
+                  placeholder={t("usernamePlaceholder")}
                   value={formData.username}
                   onChange={(e) =>
                     setFormData({ ...formData, username: e.target.value })
@@ -140,7 +137,7 @@ const Login = () => {
             {/* Input: Password */}
             <div className="space-y-2">
               <label className="block text-xs font-bold text-slate-500 tracking-wider uppercase">
-                លេខសម្ងាត់ (Password)
+                {t("password")}
               </label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 text-sm">
@@ -150,7 +147,7 @@ const Login = () => {
                   type={showPassword ? "text" : "password"}
                   required
                   className="w-full pl-11 pr-12 py-3.5 border border-slate-200 rounded-xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition bg-slate-50/50 focus:bg-white text-slate-800 font-medium tracking-wide placeholder-slate-400 text-sm sm:text-base"
-                  placeholder="បញ្ចូលលេខសម្ងាត់របស់អ្នក"
+                  placeholder={t("passwordPlaceholder")}
                   value={formData.password}
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
@@ -173,7 +170,7 @@ const Login = () => {
                 <input type="checkbox" className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300 accent-emerald-600" />
                 save
               </label>
-              <a href="#" className="text-emerald-600 font-semibold hover:underline">ភ្លេចលេខសម្ងាត់?</a>
+              <a href="#" className="text-emerald-600 font-semibold hover:underline">{t("forgotPassword")}</a>
             </div>
 
             {/* Button: Submit */}
@@ -188,11 +185,11 @@ const Login = () => {
               {loading ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  <span>កំពុងពិនិត្យទិន្នន័យ...</span>
+                  <span>{t("checkingCredentials")}</span>
                 </>
               ) : (
                 <>
-                  <span>ចូលប្រើប្រាស់គណនី</span>
+                  <span>{t("login")}</span>
                   <span className="text-xs">➔</span>
                 </>
               )}

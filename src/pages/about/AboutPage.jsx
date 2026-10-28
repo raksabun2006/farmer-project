@@ -1,7 +1,9 @@
 
-import profileImage from "/images/raksa.jpg";
+import profileImage from "/images/developer-profile.png";
+import { useTranslation } from "react-i18next";
 
 const AboutPage = () => {
+  const { t } = useTranslation();
   return (
     <div className="bg-slate-100 min-h-screen py-12 px-4">
       <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden">
@@ -27,7 +29,7 @@ const AboutPage = () => {
         <div className="p-8 md:p-12">
 
           <h2 className="text-3xl font-bold text-emerald-800 mb-6 text-center">
-            អំពីគម្រោងផ្សារកសិករ
+            {t("aboutTitle")}
           </h2>
 
           <p className="text-slate-700 text-lg leading-8 mb-6">
@@ -49,7 +51,7 @@ const AboutPage = () => {
 
             <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6">
               <h3 className="text-2xl font-bold text-emerald-700 mb-4">
-                បេសកកម្ម
+                {t("mission")}
               </h3>
 
               <p className="text-slate-700 leading-7">
@@ -61,7 +63,7 @@ const AboutPage = () => {
 
             <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6">
               <h3 className="text-2xl font-bold text-amber-700 mb-4">
-                ចក្ខុវិស័យ
+                {t("vision")}
               </h3>
 
               <p className="text-slate-700 leading-7">

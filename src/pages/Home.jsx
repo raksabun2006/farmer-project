@@ -1,294 +1,112 @@
-import { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { getAllProducts } from "../api/auth";
-import { useCart } from "../context/CartContext";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { getAllProducts } from "../api/auth.js";
+import { useAuth } from "../context/AuthContext.jsx";
+import { useCart } from "../context/CartContext.jsx";
+
+const SearchIcon = () => (
+  <svg aria-hidden="true" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m21 21-4.35-4.35m2.1-5.4a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z" />
+  </svg>
+);
+
+const CartIcon = () => (
+  <svg aria-hidden="true" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4h2l1.4 11.2a2 2 0 0 0 2 1.8h8.8a2 2 0 0 0 1.95-1.55L21 8H6M10 20h.01M17 20h.01" />
+  </svg>
+);
 
 const Home = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
-  const { addToCart } = useCart(); 
+  const { addToCart } = useCart();
   const navigate = useNavigate();
-
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("ALL");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [search, setSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
 
   useEffect(() => {
-    const fetchHomeData = async () => {
-      try {
-        setLoading(true);
-        const productData = await getAllProducts();
-        setProducts(Array.isArray(productData) ? productData.reverse() : []);
-      } catch (err) {
-        console.error(err);
-        setError("សូមអភ័យទោស, មិនអាចទាញយកទិន្នន័យបានទេ។");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchHomeData();
-  }, []);
+    getAllProducts()
+      .then((data) => setProducts(Array.isArray(data) ? [...data].reverse() : []))
+      .catch(() => setError(t("networkError")))
+      .finally(() => setLoading(false));
+  }, [t]);
 
-  // Filter Unique categories out of string variables
-  const derivedCategories = useMemo(() => {
-    const uniqueCategories = new Set();
-    products.forEach((prod) => {
-      if (prod.categoryName && prod.categoryName.trim() !== "") {
-        uniqueCategories.add(prod.categoryName.trim());
+  const productCategories = useMemo(() => {
+    const categoryMap = new Map();
+    products.forEach((product) => {
+      if (product.categoryName && !categoryMap.has(product.categoryName)) {
+        categoryMap.set(product.categoryName, product.image);
       }
     });
-    return Array.from(uniqueCategories);
+    return Array.from(categoryMap, ([label, image]) => ({ label, image }));
   }, [products]);
+  const featuredProducts = useMemo(() => products.filter((product) => {
+    const matchesSearch = `${product.name || ""} ${product.farmerName || ""}`.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory = selectedCategory === "all" || product.categoryName === selectedCategory;
+    return matchesSearch && matchesCategory;
+  }).slice(0, 6), [products, search, selectedCategory]);
 
-  // Aggregate Total Quantities dynamically per Category Tag
-  const categoryCounts = useMemo(() => {
-    const counts = {};
-    products.forEach((prod) => {
-      if (prod.categoryName) {
-        const catName = prod.categoryName.trim();
-        counts[catName] = (counts[catName] || 0) + 1;
-      }
-    });
-    return counts;
-  }, [products]);
-
-  // Filter products by category & search query, sort by stock, then select top 3
-  const displayedProducts = useMemo(() => {
-    const filtered = products.filter((prod) => {
-      const matchesCategory = selectedCategory === "ALL" || prod.categoryName === selectedCategory;
-      const matchesSearch = 
-        prod.name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        prod.farmerName?.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesCategory && matchesSearch;
-    });
-
-    // Sort by quantity descending (highest stock first) and take top 3
-    return filtered.sort((a, b) => (b.quantity || 0) - (a.quantity || 0)).slice(0, 3);
-  }, [products, selectedCategory, searchQuery]);
-
-  const handleAddToCartAndGo = (product) => {
+  const addProduct = (product) => {
     if (!user) {
-      alert("សូមចូលក្នុងប្រព័ន្ធជាមុនសិន ដើម្បីធ្វើការបញ្ជាទិញ។");
       navigate("/login");
       return;
     }
-
-    addToCart({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-    });
-
-    navigate("/cart"); 
+    addToCart({ id: product.id, name: product.name, price: product.price, image: product.image });
+    navigate("/cart");
   };
 
   return (
-    <div className="space-y-16 pb-24 bg-slate-50/30 px-4 md:px-8">
-      {/* Banner Hero Section */}
-      <section className="relative text-white rounded-3xl p-8 md:p-16 overflow-hidden shadow-xl">
-        <img
-          src="https://www.karpit.news/wp-content/uploads/2024/09/photo_1_2024-09-11_08-58-12.jpg"
-          alt="Background"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-black/40" />
-        <div className="relative z-10 max-w-2xl space-y-6">
-          <div className="font-siemreap relative z-10 max-w-2xl space-y-6">
-            <span className="inline-block bg-emerald-700/50 text-amber-300 font-bold text-xs md:text-sm px-4 py-1.5 rounded-full border border-emerald-600/30">
-              ផលិតផលក្នុងស្រុក ១០០%
-            </span>
-            
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-relaxed text-white">
-              គាំទ្រផលិតផលខ្មែរ <br /> <span className="text-amber-300">ដើម្បីកសិករខ្មែរ</span>
-            </h1>
-
-            {user && (user.role === "FARMER" || user.role === "farmer") && (
-              <div className="pt-4">
-                <button
-                  type="button"
-                  onClick={() => navigate("/farmer")}
-                  className="group flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs md:text-sm px-6 py-3.5 rounded-xl transition-all shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 cursor-pointer transform active:scale-95"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4 group-hover:translate-x-0.5 transition-transform">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5H21 A7.5 7.5 0 0 0 13.5 3v7.5Z" />
-                  </svg>
-                  ទៅកាន់ផ្ទាំងគ្រប់គ្រងកសិករ
-                </button>
-              </div>
-            )}
+    <div>
+      <section className="relative overflow-hidden bg-[#eef6ee]">
+        <div className="mx-auto grid max-w-7xl items-center gap-8 px-5 py-12 md:grid-cols-[1.05fr_.95fr] md:px-8 md:py-16">
+          <div className="relative z-10">
+            <p className="mb-4 inline-flex rounded-full bg-[#d7ebd8] px-3 py-1 text-xs font-bold text-[#17623b]">{t("localMarketplace")}</p>
+            <h1 className="max-w-xl text-4xl font-black leading-[1.35] tracking-tight text-[#173b2a] sm:text-5xl">{t("heroTitle")}</h1>
+            <p className="mt-4 max-w-lg text-base leading-8 text-slate-600 sm:text-lg">{t("heroText")}</p>
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <Link to="/product" className="rounded-xl bg-[#17623b] px-5 py-3 text-center text-sm font-bold text-white shadow-sm transition hover:bg-[#124d2e]">{t("findProducts")}</Link>
+              <Link to={user?.role === "FARMER" || user?.role === "ROLE_FARMER" ? "/dashboard" : "/register"} className="rounded-xl border border-[#17623b] bg-white px-5 py-3 text-center text-sm font-bold text-[#17623b] transition hover:bg-emerald-50">{t("startSelling")}</Link>
+            </div>
+            <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-xs font-semibold text-slate-500">
+              <span>✓ {t("clearPrices")}</span><span>✓ {t("directFromFarmers")}</span><span>✓ {t("country")}</span>
+            </div>
+          </div>
+          <div className="relative h-64 overflow-hidden rounded-[2rem] shadow-lg sm:h-80 md:h-[25rem]">
+            <img src="/images/hero-bg.jpg" alt="កសិករនៅវាលស្រែ" className="h-full w-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#173b2a]/45 to-transparent" />
+            <div className="absolute bottom-5 left-5 rounded-xl bg-white/95 px-4 py-3 shadow-lg">
+              <p className="text-xs text-slate-500">{t("localMarketplace")}</p><p className="text-lg font-black text-[#17623b]">{t("freshFromFarm")}</p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Navigation Filter Buttons & Search Field Section */}
-      <section className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 space-y-6">
-        <div className="flex flex-col lg:flex-row gap-4 justify-between items-center">
-          {/* Category Tabs */}
-          <div className="flex gap-2 overflow-x-auto w-full lg:w-auto pb-2 scrollbar-none">
-            <button
-              type="button"
-              onClick={() => setSelectedCategory("ALL")}
-              className={`px-4 py-2.5 rounded-xl text-xs font-bold border transition shrink-0 cursor-pointer ${
-                selectedCategory === "ALL" 
-                  ? "bg-emerald-600 text-white border-emerald-600" 
-                  : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
-              }`}
-            >
-              ទាំងអស់ ({products.length})
-            </button>
-
-            {derivedCategories.map((catName) => (
-              <button
-                key={catName}
-                type="button"
-                onClick={() => setSelectedCategory(catName)}
-                className={`px-4 py-2.5 rounded-xl text-xs font-bold border transition shrink-0 cursor-pointer ${
-                  selectedCategory === catName 
-                    ? "bg-emerald-600 text-white border-emerald-600" 
-                    : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
-                }`}
-              >
-                {catName} ({categoryCounts[catName] || 0})
-              </button>
-            ))}
+      <main className="mx-auto max-w-7xl space-y-14 px-5 py-12 md:px-8">
+        <section>
+          <div className="mb-5 flex items-end justify-between gap-4"><div><p className="text-xs font-bold text-[#d59620]">{t("browseAll")}</p><h2 className="mt-1 text-2xl font-black text-[#173b2a]">{t("productCategories")}</h2></div><Link to="/product" className="text-sm font-bold text-[#17623b] hover:underline">{t("browseAll")} →</Link></div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+            {productCategories.length > 0 ? productCategories.map((category) => <Link to={`/product?category=${encodeURIComponent(category.label)}`} key={category.label} className="group overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md"><div className="h-24 overflow-hidden bg-emerald-50"><img src={category.image || "/images/hero-bg.jpg"} alt={category.label} className="h-full w-full object-cover opacity-90 transition group-hover:scale-105" /></div><p className="px-2 py-3 text-center text-xs font-bold text-slate-700">{category.label}</p></Link>) : <div className="col-span-full rounded-2xl border border-dashed border-slate-200 bg-white py-10 text-center text-sm text-slate-500">{t("noCategories")}</div>}
           </div>
+        </section>
 
-          {/* Search Box */}
-          <div className="relative w-full lg:w-80">
-            <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-                <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.603 10.602Z" />
-              </svg>
-            </span>
-            <input
-              type="text"
-              placeholder="ស្វែងរកឈ្មោះផលិតផល ឬកសិករ..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition"
-            />
+        <section>
+          <div className="mb-5 flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><p className="text-xs font-bold text-[#d59620]">{t("newFromFarmers")}</p><h2 className="mt-1 text-2xl font-black text-[#173b2a]">{t("popularProducts")}</h2></div><Link to="/product" className="text-sm font-bold text-[#17623b] hover:underline">{t("viewAllProducts")} →</Link></div>
+          <div className="mb-6 flex flex-col gap-3 sm:flex-row">
+            <label className="flex flex-1 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-slate-400 focus-within:border-emerald-500 focus-within:ring-4 focus-within:ring-emerald-100"><SearchIcon /><input value={search} onChange={(event) => setSearch(event.target.value)} className="w-full py-2 text-sm outline-none" placeholder={t("searchProducts")} aria-label={t("searchProducts")} /></label>
+            <select value={selectedCategory} onChange={(event) => setSelectedCategory(event.target.value)} className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600 outline-none"><option value="all">{t("all")}</option>{productCategories.map((category) => <option key={category.label}>{category.label}</option>)}</select>
           </div>
-        </div>
-      </section>
+          {error && <p className="rounded-xl bg-red-50 p-4 text-sm text-red-700">{error}</p>}
+          {loading ? <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">{[1, 2, 3].map((item) => <div key={item} className="h-80 animate-pulse rounded-2xl bg-slate-200" />)}</div> : featuredProducts.length === 0 ? <div className="rounded-2xl border border-dashed border-slate-200 bg-white py-16 text-center text-sm text-slate-500">{t("noProducts")}</div> : <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">{featuredProducts.map((product) => { const out = Number(product.quantity) <= 0; return <article key={product.id} className="group overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"><Link to={`/product/${product.id}`} className="block"><div className="relative h-40 overflow-hidden bg-emerald-50 sm:h-56"><img src={product.image || "/images/hero-bg.jpg"} alt={product.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" /><span className="absolute left-3 top-3 rounded-lg bg-white/95 px-2 py-1 text-[10px] font-bold text-[#17623b]">{product.categoryName || t("products")}</span></div></Link><div className="p-3.5 sm:p-4"><h3 className="line-clamp-2 min-h-[3rem] text-sm font-black text-slate-800 sm:text-base">{product.name}</h3><p className="mt-1 text-xs text-slate-500">{t("seller", { name: product.farmerName || t("country") })}</p><div className="mt-3 flex items-end justify-between gap-2"><div><p className="text-lg font-black text-[#17623b]">${Number(product.price || 0).toFixed(2)}</p><p className={`text-[11px] font-semibold ${out ? "text-red-500" : "text-slate-400"}`}>{out ? t("outOfStock") : t("inStock", { count: product.quantity || 0 })}</p></div><button type="button" disabled={out} onClick={() => addProduct(product)} className="flex items-center gap-1 rounded-lg bg-[#17623b] px-2.5 py-2 text-[11px] font-bold text-white transition hover:bg-[#124d2e] disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400"><CartIcon /> {t("add")}</button></div></div></article>; })}</div>}
+        </section>
 
-      {error && <div className="text-red-500 text-center py-4 font-medium">{error}</div>}
-
-      {/* Main Display Grid */}
-      <section className="space-y-8">
-        <h2 className="text-2xl font-black text-slate-800">ផលិតផលលក់ដាច់ខ្លាំង (មានស្តុកច្រើន)</h2>
-
-        {loading ? (
-          <div className="text-center py-10 text-slate-500">កំពុងផ្ទុកទិន្នន័យ...</div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"> 
-            {displayedProducts.length === 0 ? (
-              <div className="text-center py-20 text-slate-400 col-span-full bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12 mx-auto mb-3 text-slate-300">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m6 4.125 2.25 2.25m0 0 2.25 2.25m-2.25-2.25 2.25-2.25m-2.25 2.25-2.25-2.25M3.75 7.5h16.5M5.497 5.12a2.25 2.25 0 0 1 1.947-1.12h9.112a2.25 2.25 0 0 1 1.947 1.12l1.531 2.38a1.125 1.125 0 0 1-.947 1.73H4.912a1.125 1.125 0 0 1-.947-1.73l1.532-2.38Z" />
-                </svg>
-                <span className="font-bold text-sm tracking-wide">មិនមានផលិតផលទេក្នុងពេលនេះ។</span>
-              </div>
-            ) : (
-              displayedProducts.map((prod) => {
-                const isOutOfStock = prod.quantity <= 0;
-                return (
-                  <div 
-                    key={prod.id} 
-                    className="bg-white border border-slate-100 rounded-[2rem] p-4 shadow-sm hover:shadow-xl hover:-translate-y-1.5 flex flex-col justify-between group max-w-sm w-full mx-auto transition-all duration-300 relative overflow-hidden"
-                  >
-                    <div>
-                      {/* Image Section */}
-                      <div className="relative h-60 bg-slate-50 rounded-2xl overflow-hidden mb-4 shadow-inner">
-                        <img 
-                          src={prod.image || "https://placehold.co/400x300?text=No+Image"} 
-                          alt={prod.name} 
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" 
-                        />
-                        
-                        <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-emerald-800 text-[11px] font-black px-3 py-1.5 rounded-xl shadow-sm border border-white/40">
-                          {prod.categoryName || "ផលិតផលខ្មែរ"}
-                        </span>
-
-                        {isOutOfStock && (
-                          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px] flex items-center justify-center">
-                            <span className="bg-red-500 text-white font-extrabold text-xs px-4 py-2 rounded-xl shadow-md border border-red-400 uppercase tracking-wider">
-                              អស់ពីស្តុក
-                            </span>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Content Details */}
-                      <div className="px-1">
-                        <h3 className="font-black text-slate-800 text-base leading-snug mb-1.5 line-clamp-2 group-hover:text-emerald-700 transition duration-200">
-                          {prod.name}
-                        </h3>
-                        
-                        <div className="flex flex-col gap-0.5">
-                          <p className="text-slate-400 text-xs font-medium flex items-center gap-1">
-                            <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                            លក់ដោយ៖ <span className="font-semibold text-slate-600">{prod.farmerName || "កសិករខ្មែរ"}</span>
-                          </p>
-                          
-                          <p className={`text-[11px] font-bold ${isOutOfStock ? "text-red-500" : "text-amber-600"}`}>
-                            {isOutOfStock ? "មិនអាចកម្ម៉ង់បានទេ" : `មានក្នុងស្តុក: ${prod.quantity || 0}`}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Pricing & CTA Button Footer */}
-                    <div className="border-t border-slate-100/80 pt-3.5 flex justify-between items-center mt-5 px-1">
-                      <div className="flex flex-col">
-                        <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wider">តម្លៃសរុប</span>
-                        <span className="text-emerald-600 font-black text-2xl tracking-tight">
-                          ${Number(prod.price).toFixed(2)}
-                        </span>
-                      </div>
-
-                      <button
-                        onClick={() => handleAddToCartAndGo(prod)}
-                        disabled={isOutOfStock}
-                        className={`flex items-center gap-2 px-5 py-3 rounded-xl text-xs font-black transition-all transform active:scale-95 ${
-                          isOutOfStock 
-                            ? "bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200 shadow-none" 
-                            : "bg-emerald-800 hover:bg-amber-500 text-white hover:text-slate-950 cursor-pointer shadow-md shadow-emerald-800/10 hover:shadow-amber-500/20"
-                        }`}
-                      >
-                        {!isOutOfStock && (
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.119-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                          </svg>
-                        )}
-                        {isOutOfStock ? "អស់ពីស្តុក" : "កុម្ម៉ង់ទិញ"}
-                      </button>
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
-        )}
-      </section>
-
-      {/* Trust & Value Proposition Badges Section */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
-        <div className="bg-white border border-slate-100 p-6 rounded-2xl flex flex-col justify-center shadow-sm">
-          <h4 className="font-bold text-slate-800 text-sm mb-1">ស្រស់ៗពីចម្ការ</h4>
-          <p className="text-slate-400 text-xs leading-relaxed">ធានាគុណភាពផលិតផលធម្មជាតិពិតៗ ប្រមូលផលផ្ទាល់ពីដៃកសិករខ្មែរ។</p>
-        </div>
-        <div className="bg-white border border-slate-100 p-6 rounded-2xl flex flex-col justify-center shadow-sm">
-          <h4 className="font-bold text-slate-800 text-sm mb-1">តម្លៃសមរម្យយុត្តិធម៌</h4>
-          <p className="text-slate-400 text-xs leading-relaxed">ទិញដោយផ្ទាល់ដោយមិនឆ្លងកាត់ឈ្មួញកណ្តាល ជួយបង្កើនចំណូលកសិករ។</p>
-        </div>
-        <div className="bg-white border border-slate-100 p-6 rounded-2xl flex flex-col justify-center shadow-sm">
-          <h4 className="font-bold text-slate-800 text-sm mb-1">រួមគ្នាគាំទ្រសហគមន៍</h4>
-          <p className="text-slate-400 text-xs leading-relaxed">រាល់ការបញ្ជាទិញរបស់អ្នក គឺជាកម្លាំងចិត្ត និងការអភិវឌ្ឍន៍វិស័យកសិកម្មជាតិ。</p>
-        </div>
-      </section>
+        <section className="grid gap-4 rounded-3xl bg-[#173b2a] p-6 text-white sm:grid-cols-4 sm:p-8">
+          {[["directFromFarmers", "tagline"], ["clearPrices", "showingProducts"], ["findByProvince", "products"], ["easyContact", "contact"]].map(([titleKey, textKey]) => <div key={titleKey} className="border-b border-white/10 pb-4 last:border-0 sm:border-b-0 sm:border-r sm:pb-0 sm:pr-4 sm:last:border-0"><h3 className="font-bold text-[#f2bd4b]">{t(titleKey)}</h3><p className="mt-1 text-xs leading-6 text-emerald-100/75">{t(textKey)}</p></div>)}
+        </section>
+      </main>
     </div>
   );
 };
