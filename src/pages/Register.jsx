@@ -36,6 +36,7 @@ const Register = () => {
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     const [formData, setFormData] = useState({
         username: '',
@@ -77,10 +78,10 @@ const Register = () => {
                     const detailedErrors = data.errors.map(err => err.defaultMessage).join(", ");
                     throw new Error(detailedErrors);
                 }
-                throw new Error(data.message || 'ការចុះឈ្មោះបានបរាជ័យ');
+                throw new Error(data.message || t("registerFailed"));
             }
 
-            setSuccessMessage('គណនីរបស់អ្នកត្រូវបានបង្កើតដោយជោគជ័យ');
+            setSuccessMessage(t("registerSuccess"));
             
             setTimeout(() => {
                 navigate('/login');
@@ -88,53 +89,57 @@ const Register = () => {
 
         } catch (err) {
             console.error("Register Error:", err);
-            setErrorMessage(err.message || 'មិនអាចតភ្ជាប់ជាមួយម៉ាស៊ីនមេបានទេ');
+            setErrorMessage(err.message || t("serverConnectionError"));
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen w-full flex bg-slate-50">
+        <div className="min-h-screen w-full bg-[#f3f8f3] lg:grid lg:grid-cols-[1.05fr_.95fr]">
             
             {/* ផ្នែកខាងឆ្វេង៖ ផ្ទាំងរូបភាពលម្អ */}
             <div
-                className="hidden lg:block lg:w-[55%] relative overflow-hidden bg-cover bg-center"
+                className="relative hidden min-h-screen overflow-hidden bg-cover bg-center lg:block"
                 style={{ backgroundImage: "url('/images/farmer.jpg')" }}
             >
-                <div className="absolute inset-0 bg-black/50"></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-                <div className="absolute inset-0 flex flex-col justify-between p-16 text-white z-10 max-w-2xl">
-                    <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full w-max text-xs font-bold tracking-wider uppercase border border-white/10">
-                        វេទិកាទំនើបសម្រាប់កសិករខ្មែរ
+                <div className="absolute inset-0 bg-[#123b28]/65"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#123b28] via-transparent to-black/20"></div>
+                <div className="absolute inset-0 z-10 flex max-w-2xl flex-col justify-between p-10 text-white xl:p-16">
+                    <div className="flex w-max items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-bold tracking-wider backdrop-blur-md">
+                        {t("localMarketplace")}
                     </div>
                     <div className="space-y-4 mb-8">
                         <h1 className="text-4xl font-extrabold tracking-tight leading-tight xl:text-5xl">
-                            ប្រព័ន្ធគ្រប់គ្រង និងចែកចាយ <br />
-                            ផលិតផលកសិកម្មជាតិ
+                            {t("heroTitle")}
                         </h1>
                         <p className="text-emerald-100/80 font-medium leading-relaxed max-w-md text-sm xl:text-base">
-                            ចូលរួមជាមួយបណ្តាញកសិកម្មវៃឆ្លាត ដើម្បីពង្រីកសក្តានុពលទីផ្សារ
-                            និងបង្កើនប្រាក់ចំណូលរបស់អ្នកប្រកបដោយចីរភាព។
+                            {t("createAccountDescription")}
                         </p>
                     </div>
                     <p className="text-xs text-gray-300">
-                        © 2026 ផ្សារកសិករ (Farmer Marketplace). រក្សាសិទ្ធិគ្រប់យ៉ាង។
+                        © 2026 {t("brand")} · {t("country")}
                     </p>
                 </div>
             </div>
 
             {/* ផ្នែកខាងស្តាំ៖ Form ចុះឈ្មោះ */}
-            <div className="w-full lg:w-[45%] flex flex-col justify-center px-6 py-12 sm:px-12 lg:px-16 bg-white relative z-10 shadow-2xl lg:shadow-none overflow-y-auto">
-                <div className="mx-auto w-full max-w-md space-y-7 animate-fadeIn my-auto">
+            <div className="relative flex w-full flex-col justify-center overflow-y-auto bg-white px-5 py-10 sm:px-10 lg:px-14">
+                <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-emerald-50 lg:hidden" aria-hidden="true"></div>
+                <div className="pointer-events-none absolute -bottom-32 -left-24 h-64 w-64 rounded-full bg-lime-50 lg:hidden" aria-hidden="true"></div>
+                <div className="relative mx-auto my-auto w-full max-w-md space-y-7">
                     
                     {/* Header */}
                     <div className="text-center lg:text-left">
-                        <h2 className="text-3xl font-black text-slate-800 tracking-tight sm:text-4xl">
+                        <div className="mb-5 flex items-center gap-3">
+                            <img src="/images/logo.png" alt={t("brand")} className="h-12 w-12 object-contain drop-shadow-sm" />
+                            <div><p className="font-black text-emerald-800">{t("brand")}</p><p className="text-xs text-slate-400">{t("country")}</p></div>
+                        </div>
+                        <h2 className="text-3xl font-black tracking-tight text-slate-800 sm:text-4xl">
                             {t("register")}
                         </h2>
                         <p className="text-slate-500 text-sm mt-2 font-medium">
-                            សូមបំពេញព័ត៌មានខាងក្រោមដើម្បីចូលរួមក្នុង <span className="text-emerald-600 font-semibold">ផ្សារកសិករ</span>។
+                            {t("createAccountDescription")}
                         </p>
                     </div>
 
@@ -156,30 +161,30 @@ const Register = () => {
                         {/* Section 1: Account Information */}
                         <div className="space-y-3">
                             <h3 className="text-xs font-bold text-emerald-600 uppercase tracking-wider border-b border-slate-100 pb-1.5">
-                                ១. ព័ត៌មានគណនី
+                                {t("accountInformation")}
                             </h3>
                             
                             <div className="space-y-3">
                                 <div className="space-y-1">
-                                    <label className="block text-xs font-bold text-slate-500 tracking-wider uppercase">ឈ្មោះគណនី (Username) *</label>
-                                    <input type="text" name="username" required minLength={3} maxLength={20} value={formData.username} onChange={handleChange} placeholder="username" className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition bg-slate-50/50 focus:bg-white text-slate-800 text-sm font-medium" />
+                                    <label htmlFor="register-username" className="block text-sm font-bold text-slate-700">{t("username")} *</label>
+                                    <input id="register-username" type="text" name="username" required minLength={3} maxLength={20} value={formData.username} onChange={handleChange} placeholder={t("usernamePlaceholder")} autoComplete="username" className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10" />
                                 </div>
                                 
                                 <div className="space-y-1">
-                                    <label className="block text-xs font-bold text-slate-500 tracking-wider uppercase">អ៊ីមែល (Email) *</label>
-                                    <input type="email" name="email" required value={formData.email} onChange={handleChange} placeholder="example@gmail.com" className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition bg-slate-50/50 focus:bg-white text-slate-800 text-sm font-medium" />
+                                    <label htmlFor="register-email" className="block text-sm font-bold text-slate-700">{t("email")} *</label>
+                                    <input id="register-email" type="email" name="email" required value={formData.email} onChange={handleChange} placeholder="example@gmail.com" autoComplete="email" className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10" />
                                 </div>
 
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
                                     <div className="space-y-1">
-                                        <label className="block text-xs font-bold text-slate-500 tracking-wider uppercase">លេខកូដសម្ងាត់ *</label>
-                                        <input type="password" name="password" required minLength={6} value={formData.password} onChange={handleChange} placeholder="យ៉ាងតិច ៦ ខ្ទង់" className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition bg-slate-50/50 focus:bg-white text-slate-800 text-sm font-medium" />
+                                        <label htmlFor="register-password" className="block text-sm font-bold text-slate-700">{t("password")} *</label>
+                                        <div className="relative"><input id="register-password" type={showPassword ? "text" : "password"} name="password" required minLength={6} value={formData.password} onChange={handleChange} placeholder={t("passwordPlaceholder")} autoComplete="new-password" className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 pr-12 text-sm font-medium text-slate-800 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10" /><button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 flex w-12 items-center justify-center rounded-r-xl text-emerald-700 transition hover:bg-emerald-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-emerald-500" aria-label={showPassword ? t("hidePassword") : t("showPassword")}><svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current" strokeWidth="1.8">{showPassword ? <><path d="M3 3l18 18" /><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8" /><path d="M9.9 5.2A10.7 10.7 0 0 1 12 5c5.2 0 8.5 5 8.5 5a16.7 16.7 0 0 1-3.2 3.5M6.7 6.7C4.8 8 3.5 10 3.5 10S6.8 15 12 15c.8 0 1.5-.1 2.2-.3" /></> : <><path d="M2.5 12s3.3-5 9.5-5 9.5 5 9.5 5-3.3 5-9.5 5-9.5-5-9.5-5Z" /><circle cx="12" cy="12" r="2.2" /></>}</svg></button></div>
                                     </div>
                                     <div className="space-y-1">
-                                        <label className="block text-xs font-bold text-slate-500 tracking-wider uppercase">តួនាទីក្នុងប្រព័ន្ធ *</label>
-                                        <select name="role" value={formData.role} onChange={handleChange} className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition bg-slate-50/50 focus:bg-white text-slate-800 text-sm font-semibold cursor-pointer">
-                                            <option value="FARMER">កសិករ (Farmer)</option>
-                                            <option value="CUSTOMER">អ្នកទិញ (Customer)</option>
+                                        <label htmlFor="register-role" className="block text-sm font-bold text-slate-700">{t("role")} *</label>
+                                        <select id="register-role" name="role" value={formData.role} onChange={handleChange} className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10">
+                                            <option value="FARMER">{t("farmer")}</option>
+                                            <option value="CUSTOMER">{t("customer")}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -189,24 +194,24 @@ const Register = () => {
                         {/* Section 2: Personal Information */}
                         <div className="space-y-3 pt-2">
                             <h3 className="text-xs font-bold text-emerald-600 uppercase tracking-wider border-b border-slate-100 pb-1.5">
-                                ២. ព័ត៌មានផ្ទាល់ខ្លួន
+                                {t("personalInformation")}
                             </h3>
                             
                             <div className="space-y-3">
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
                                     <div className="space-y-1">
-                                        <label className="block text-xs font-bold text-slate-500 tracking-wider uppercase">ឈ្មោះពេញ</label>
-                                        <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} placeholder="ឈ្មោះពេញរបស់អ្នក" className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition bg-slate-50/50 focus:bg-white text-slate-800 text-sm font-medium" />
+                                        <label className="block text-sm font-bold text-slate-700">{t("fullName")}</label>
+                                        <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} placeholder={t("fullNamePlaceholder")} autoComplete="name" className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10" />
                                     </div>
                                     <div className="space-y-1">
-                                        <label className="block text-xs font-bold text-slate-500 tracking-wider uppercase">លេខទូរស័ព្ទ</label>
-                                        <input type="text" name="phone" value={formData.phone} onChange={handleChange} placeholder="012 345 678" className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition bg-slate-50/50 focus:bg-white text-slate-800 text-sm font-medium" />
+                                        <label className="block text-sm font-bold text-slate-700">{t("phone")}</label>
+                                        <input type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder={t("phonePlaceholder")} autoComplete="tel" className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10" />
                                     </div>
                                 </div>
 
                                 <div className="space-y-1">
-                                    <label className="block text-xs font-bold text-slate-500 tracking-wider uppercase">រាជធានី / ខេត្ត *</label>
-                                    <select name="province" value={formData.province} onChange={handleChange} className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition bg-slate-50/50 focus:bg-white text-slate-800 text-sm font-medium cursor-pointer">
+                                    <label className="block text-sm font-bold text-slate-700">{t("province")} *</label>
+                                    <select name="province" value={formData.province} onChange={handleChange} className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10">
                                         {CAMBODIA_PROVINCES.map((prov, index) => (
                                             <option key={index} value={prov.en}>
                                                 {prov.km} ({prov.en})
@@ -231,12 +236,11 @@ const Register = () => {
                                 {loading ? (
                                     <>
                                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                        <span>កំពុងបង្កើតគណនី...</span>
+                                        <span>{t("loading")}</span>
                                     </>
                                 ) : (
                                     <>
-                                        <span>ចុះឈ្មោះបង្កើតគណនី</span>
-                                        <span className="text-xs"></span>
+                                        <span>{t("register")}</span>
                                     </>
                                 )}
                             </button>
@@ -246,12 +250,12 @@ const Register = () => {
                     {/* Footer Redirect Link */}
                     <div className="pt-4 border-t border-slate-100 text-center lg:text-left">
                         <p className="text-sm text-slate-500 font-medium">
-                            មានគណនីរួចហើយមែនទេ?{" "}
+                            {t("noAccount")}{" "}
                             <Link
                                 to="/login"
                                 className="text-emerald-600 font-bold hover:text-emerald-700 hover:underline inline-flex items-center gap-1 transition"
                             >
-                                ចូលប្រើប្រាស់នៅទីនេះ
+                                {t("login")}
                             </Link>
                         </p>
                     </div>
