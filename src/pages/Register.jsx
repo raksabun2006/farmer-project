@@ -96,11 +96,11 @@ const Register = () => {
     };
 
     return (
-        <div className="min-h-screen w-full bg-[#f3f8f3] lg:grid lg:grid-cols-[1.05fr_.95fr]">
+        <div className="min-h-dvh w-full bg-[#f3f8f3] xl:grid xl:grid-cols-[1.05fr_.95fr]">
             
             {/* ផ្នែកខាងឆ្វេង៖ ផ្ទាំងរូបភាពលម្អ */}
             <div
-                className="relative hidden min-h-screen overflow-hidden bg-cover bg-center lg:block"
+                className="relative hidden min-h-dvh overflow-hidden bg-cover bg-center xl:block"
                 style={{ backgroundImage: "url('/images/farmer.jpg')" }}
             >
                 <div className="absolute inset-0 bg-[#123b28]/65"></div>
@@ -124,14 +124,14 @@ const Register = () => {
             </div>
 
             {/* ផ្នែកខាងស្តាំ៖ Form ចុះឈ្មោះ */}
-            <div className="relative flex w-full flex-col justify-center overflow-y-auto bg-white px-5 py-10 sm:px-10 lg:px-14">
-                <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-emerald-50 lg:hidden" aria-hidden="true"></div>
-                <div className="pointer-events-none absolute -bottom-32 -left-24 h-64 w-64 rounded-full bg-lime-50 lg:hidden" aria-hidden="true"></div>
-                <div className="relative mx-auto my-auto w-full max-w-md space-y-7">
+            <div className="relative flex min-h-dvh w-full flex-col justify-start overflow-y-auto bg-white px-5 py-8 sm:px-10 sm:py-12 xl:justify-center xl:px-14">
+                <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-emerald-50 xl:hidden" aria-hidden="true"></div>
+                <div className="pointer-events-none absolute -bottom-32 -left-24 h-64 w-64 rounded-full bg-lime-50 xl:hidden" aria-hidden="true"></div>
+                <div className="relative mx-auto w-full max-w-md space-y-7">
                     
                     {/* Header */}
-                    <div className="text-center lg:text-left">
-                        <div className="mb-5 flex items-center gap-3">
+                    <div className="text-center xl:text-left">
+                        <div className="mb-5 flex items-center justify-center gap-3 xl:justify-start">
                             <img src="/images/logo.png" alt={t("brand")} className="h-12 w-12 object-contain drop-shadow-sm" />
                             <div><p className="font-black text-emerald-800">{t("brand")}</p><p className="text-xs text-slate-400">{t("country")}</p></div>
                         </div>
@@ -248,7 +248,7 @@ const Register = () => {
                     </form>
 
                     {/* Footer Redirect Link */}
-                    <div className="pt-4 border-t border-slate-100 text-center lg:text-left">
+                    <div className="pt-4 border-t border-slate-100 text-center xl:text-left">
                         <p className="text-sm text-slate-500 font-medium">
                             {t("noAccount")}{" "}
                             <Link

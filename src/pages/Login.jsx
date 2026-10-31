@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 import { loginUser } from "../api/auth.js";
 import { Link, useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
+import { getDashboardPath } from "../utils/auth.js";
 
 const Login = () => {
   const { t } = useTranslation();
@@ -31,11 +32,7 @@ const Login = () => {
         }
         login(token, { username, role, id }); 
         
-        if (role === 'FARMER' || role === 'ROLE_FARMER') {
-            navigate('/dashboard');
-        } else {
-            navigate('/');
-        }
+        navigate(getDashboardPath(role));
     } catch (err) {
         const fallbackMsg = t("networkError");
         const serverMessage = err.response?.data?.message || err.message;
@@ -46,9 +43,9 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#f3f8f3] lg:grid lg:grid-cols-[1.05fr_.95fr]">
+    <div className="min-h-dvh w-full bg-[#f3f8f3] xl:grid xl:grid-cols-[1.05fr_.95fr]">
       <div
-  className="relative hidden min-h-screen overflow-hidden bg-cover bg-center lg:block"
+  className="relative hidden min-h-dvh overflow-hidden bg-cover bg-center xl:block"
   style={{
     backgroundImage: "url('/images/farmer.jpg')",
   }}
@@ -81,15 +78,15 @@ const Login = () => {
 </div>
 
       
-      <div className="relative flex w-full flex-col justify-center overflow-hidden bg-white px-5 py-10 sm:px-10 lg:px-14">
-        <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-emerald-50 lg:hidden" aria-hidden="true"></div>
-        <div className="pointer-events-none absolute -bottom-32 -left-24 h-64 w-64 rounded-full bg-lime-50 lg:hidden" aria-hidden="true"></div>
+      <div className="relative flex min-h-dvh w-full flex-col justify-center overflow-hidden bg-white px-5 py-8 sm:px-10 sm:py-12 xl:px-14">
+        <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-emerald-50 xl:hidden" aria-hidden="true"></div>
+        <div className="pointer-events-none absolute -bottom-32 -left-24 h-64 w-64 rounded-full bg-lime-50 xl:hidden" aria-hidden="true"></div>
         
         <div className="relative mx-auto w-full max-w-md space-y-7">
           
           {/* Branding / Header */}
-          <div className="text-center lg:text-left">
-            <div className="mb-6 flex items-center justify-center gap-3 lg:justify-start">
+          <div className="text-center xl:text-left">
+            <div className="mb-6 flex items-center justify-center gap-3 xl:justify-start">
               <img src="/images/logo.png" alt={t("brand")} className="h-12 w-12 object-contain drop-shadow-sm" />
               <div><p className="font-black text-emerald-800">{t("brand")}</p><p className="text-xs text-slate-400">{t("country")}</p></div>
             </div>
@@ -212,7 +209,7 @@ const Login = () => {
           </form>
 
           {/* Redirection area area footer links */}
-          <div className="border-t border-slate-100 pt-5 text-center lg:text-left">
+          <div className="border-t border-slate-100 pt-5 text-center xl:text-left">
             <p className="text-sm text-slate-500 font-medium">
               {t("noAccount")}{" "}
               <Link

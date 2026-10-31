@@ -19,7 +19,7 @@ export async function getOrderDetails(orderId) {
 }
 
 // Change 'public' to 'export'
-export async function generateBakongQR(amount) {
+export async function generateBakongQR(amount, orderId) {
     const token = localStorage.getItem("token");
     const response = await fetch(`${BASE_URL}/api/payment/create`, {
         method: "POST",
@@ -27,7 +27,7 @@ export async function generateBakongQR(amount) {
             "Content-Type": "application/json",
             "Authorization": token ? `Bearer ${token}` : ""
         },
-        body: JSON.stringify({ amount: parseFloat(amount) })
+        body: JSON.stringify({ orderId: orderId, amount: parseFloat(amount) })
     });
     if (!response.ok) {
         throw new Error("Failed to generate dynamic KHQR payload matrix");

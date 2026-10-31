@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { getAllProducts } from "../api/auth.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useCart } from "../context/CartContext.jsx";
+import { getDashboardPath, isFarmerRole } from "../utils/auth.js";
 
 const SearchIcon = () => (
   <svg aria-hidden="true" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -69,7 +70,7 @@ const Home = () => {
             <p className="mt-4 max-w-lg text-base leading-8 text-slate-600 sm:text-lg">{t("heroText")}</p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <Link to="/product" className="rounded-xl bg-[#17623b] px-5 py-3 text-center text-sm font-bold text-white shadow-sm transition hover:bg-[#124d2e]">{t("findProducts")}</Link>
-              <Link to={user?.role === "FARMER" || user?.role === "ROLE_FARMER" ? "/dashboard" : "/register"} className="rounded-xl border border-[#17623b] bg-white px-5 py-3 text-center text-sm font-bold text-[#17623b] transition hover:bg-emerald-50">{t("startSelling")}</Link>
+              <Link to={isFarmerRole(user?.role) ? getDashboardPath(user.role) : "/register"} className="rounded-xl border border-[#17623b] bg-white px-5 py-3 text-center text-sm font-bold text-[#17623b] transition hover:bg-emerald-50">{t("startSelling")}</Link>
             </div>
             <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-xs font-semibold text-slate-500">
               <span>✓ {t("clearPrices")}</span><span>✓ {t("directFromFarmers")}</span><span>✓ {t("country")}</span>

@@ -1,6 +1,7 @@
 import { Navigate } from "react-router";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useTranslation } from "react-i18next";
+import { normalizeRole } from "../utils/auth.js";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, loading } = useAuth();
@@ -26,7 +27,10 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   }
 
   // 3. If a list of allowedRoles is provided, check if the user has the required permission
-  if (allowedRoles && !allowedRoles.includes(user.role)) {
+  const userRole = normalizeRole(user.role);
+  const normalizedAllowedRoles = allowedRoles?.map(normalizeRole);
+
+  if (normalizedAllowedRoles && !normalizedAllowedRoles.includes(userRole)) {
     // If they are unauthorized (e.g., a customer trying to look at a farmer dashboard), boot them to home
     return <Navigate to="/" replace />;
   }

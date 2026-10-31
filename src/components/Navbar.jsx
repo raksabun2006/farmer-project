@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import i18n from "../i18n/index.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useCart } from "../context/CartContext.jsx";
+import { getDashboardPath, isFarmerRole } from "../utils/auth.js";
 
 const SearchIcon = () => (
   <svg aria-hidden="true" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -94,6 +95,11 @@ const Navbar = () => {
               <CartIcon />
               {cart.length > 0 && <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#f2bd4b] px-1 text-[10px] font-black text-[#173b2a]">{cart.length}</span>}
             </Link>
+            {user && isFarmerRole(user.role) && (
+              <Link to={localizedPath(getDashboardPath(user.role))} className="hidden rounded-xl border border-emerald-200 px-3 py-2 text-xs font-bold text-emerald-700 transition hover:bg-emerald-50 sm:block">
+                {t("dashboard")}
+              </Link>
+            )}
             {user ? (
               <button type="button" onClick={signOut} className="hidden rounded-xl bg-[#17623b] px-3 py-2 text-xs font-bold text-white transition hover:bg-[#124d2e] sm:block">{t("logout")}</button>
             ) : (
@@ -115,6 +121,7 @@ const Navbar = () => {
                 <button type="button" onClick={() => changeLanguage("en")} className={`flex items-center gap-1.5 rounded border px-3 py-1 text-xs font-bold ${i18n.language === "en" ? "border-emerald-500 text-emerald-700" : "border-slate-200 text-slate-400"}`} aria-label={t("english")} title={t("english")}><img src="/images/flag-us.svg" alt="" className="h-4 w-6 rounded-[2px] object-cover shadow-sm" />EN</button>
                 <button type="button" onClick={() => changeLanguage("km")} className={`flex items-center gap-1.5 rounded border px-3 py-1 text-xs font-bold ${i18n.language === "km" ? "border-emerald-500 text-emerald-700" : "border-slate-200 text-slate-400"}`} aria-label={t("khmer")} title={t("khmer")}><img src="https://upload.wikimedia.org/wikipedia/commons/8/83/Flag_of_Cambodia.svg" alt="" className="h-4 w-6 rounded-[2px] object-cover shadow-sm" />KM</button>
               </div>
+              {user && isFarmerRole(user.role) && <Link to={localizedPath(getDashboardPath(user.role))} onClick={() => setMenuOpen(false)} className="rounded-lg px-3 py-2 text-sm font-semibold text-emerald-700">{t("dashboard")}</Link>}
               {user ? <button type="button" onClick={signOut} className="text-left rounded-lg px-3 py-2 text-sm font-semibold text-red-600">{t("logout")}</button> : <Link to="/login" onClick={() => setMenuOpen(false)} className="rounded-lg px-3 py-2 text-sm font-semibold text-emerald-700">{t("login")}</Link>}
             </div>
           </div>

@@ -25,9 +25,7 @@ const OrderConfirmationPage = () => {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${localStorage.getItem("token")}`
                     },
-                    body: JSON.stringify({ 
-                        amount: orderData.totalAmount 
-                    })
+                    body: JSON.stringify({ orderId: orderId, amount: orderData.totalAmount })
                 });
 
                 if (paymentResponse.ok) {
@@ -65,10 +63,7 @@ const OrderConfirmationPage = () => {
                             "Content-Type": "application/json",
                             "Authorization": `Bearer ${localStorage.getItem("token")}`
                         },
-                        body: JSON.stringify({ 
-                            md5: order.md5,
-                            transactionId: order.transactionId 
-                        })
+                        body: JSON.stringify({ orderId: orderId, md5: order.md5, md5Hash: order.md5, transactionId: order.transactionId })
                     });
 
                     if (response.ok) {
