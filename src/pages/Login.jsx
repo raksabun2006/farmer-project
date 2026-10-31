@@ -43,7 +43,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-dvh w-full bg-[#f3f8f3] xl:grid xl:grid-cols-[1.05fr_.95fr]">
+    <div className="min-h-dvh w-full overflow-x-hidden bg-[#f3f8f3] xl:grid xl:grid-cols-[1.05fr_.95fr]">
       <div
   className="relative hidden min-h-dvh overflow-hidden bg-cover bg-center xl:block"
   style={{
@@ -78,11 +78,11 @@ const Login = () => {
 </div>
 
       
-      <div className="relative flex min-h-dvh w-full flex-col justify-start overflow-y-auto bg-white px-4 py-6 sm:justify-center sm:px-10 sm:py-12 xl:px-14">
+      <div className="relative flex min-h-dvh w-full min-w-0 flex-col justify-start overflow-x-hidden overflow-y-auto bg-white px-4 py-6 sm:justify-center sm:px-10 sm:py-12 xl:px-14">
         <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-emerald-50 xl:hidden" aria-hidden="true"></div>
         <div className="pointer-events-none absolute -bottom-32 -left-24 h-64 w-64 rounded-full bg-lime-50 xl:hidden" aria-hidden="true"></div>
         
-        <div className="relative mx-auto w-full max-w-md space-y-6 sm:space-y-7">
+        <div className="relative mx-auto w-full min-w-0 max-w-[28rem] space-y-6 sm:space-y-7">
           
           {/* Branding / Header */}
           <div className="text-center xl:text-left">

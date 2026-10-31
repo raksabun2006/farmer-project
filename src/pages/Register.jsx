@@ -96,7 +96,7 @@ const Register = () => {
     };
 
     return (
-        <div className="min-h-dvh w-full bg-[#f3f8f3] xl:grid xl:grid-cols-[1.05fr_.95fr]">
+        <div className="min-h-dvh w-full overflow-x-hidden bg-[#f3f8f3] xl:grid xl:grid-cols-[1.05fr_.95fr]">
             
             {/* ផ្នែកខាងឆ្វេង៖ ផ្ទាំងរូបភាពលម្អ */}
             <div
@@ -124,10 +124,10 @@ const Register = () => {
             </div>
 
             {/* ផ្នែកខាងស្តាំ៖ Form ចុះឈ្មោះ */}
-            <div className="relative flex min-h-dvh w-full flex-col justify-start overflow-y-auto bg-white px-4 py-6 sm:px-10 sm:py-12 xl:justify-center xl:px-14">
+            <div className="relative flex min-h-dvh w-full min-w-0 flex-col justify-start overflow-x-hidden overflow-y-auto bg-white px-4 py-6 sm:px-10 sm:py-12 xl:justify-center xl:px-14">
                 <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-emerald-50 xl:hidden" aria-hidden="true"></div>
                 <div className="pointer-events-none absolute -bottom-32 -left-24 h-64 w-64 rounded-full bg-lime-50 xl:hidden" aria-hidden="true"></div>
-                <div className="relative mx-auto w-full max-w-md space-y-6 sm:space-y-7">
+                <div className="relative mx-auto w-full min-w-0 max-w-[28rem] space-y-6 sm:space-y-7">
                     
                     {/* Header */}
                     <div className="text-center xl:text-left">
