@@ -78,25 +78,25 @@ const Login = () => {
 </div>
 
       
-      <div className="relative flex min-h-dvh w-full flex-col justify-center overflow-hidden bg-white px-5 py-8 sm:px-10 sm:py-12 xl:px-14">
+      <div className="relative flex min-h-dvh w-full flex-col justify-start overflow-y-auto bg-white px-4 py-6 sm:justify-center sm:px-10 sm:py-12 xl:px-14">
         <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-emerald-50 xl:hidden" aria-hidden="true"></div>
         <div className="pointer-events-none absolute -bottom-32 -left-24 h-64 w-64 rounded-full bg-lime-50 xl:hidden" aria-hidden="true"></div>
         
-        <div className="relative mx-auto w-full max-w-md space-y-7">
+        <div className="relative mx-auto w-full max-w-md space-y-6 sm:space-y-7">
           
           {/* Branding / Header */}
           <div className="text-center xl:text-left">
-            <div className="mb-6 flex items-center justify-center gap-3 xl:justify-start">
-              <img src="/images/logo.png" alt={t("brand")} className="h-12 w-12 object-contain drop-shadow-sm" />
+            <div className="mb-4 flex items-center justify-center gap-3 sm:mb-6 xl:justify-start">
+              <img src="/images/logo.png" alt={t("brand")} className="h-10 w-10 object-contain drop-shadow-sm sm:h-12 sm:w-12" />
               <div><p className="font-black text-emerald-800">{t("brand")}</p><p className="text-xs text-slate-400">{t("country")}</p></div>
             </div>
             <div className="mb-3 inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
               {t("localMarketplace")}
             </div>
-            <h2 className="text-3xl font-black tracking-tight text-slate-800 sm:text-4xl">
+            <h2 className="text-2xl font-black tracking-tight text-slate-800 sm:text-4xl">
               {t("login")}
             </h2>
-            <p className="mt-2 text-sm font-medium leading-7 text-slate-500">
+            <p className="mt-2 text-sm font-medium leading-6 text-slate-500 sm:leading-7">
               {t("tagline")}
             </p>
           </div>
@@ -110,7 +110,7 @@ const Login = () => {
           )}
 
           {/* Form Elements */}
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
             
             {/* Input: Username */}
             <div className="space-y-2">
@@ -123,7 +123,7 @@ const Login = () => {
                   type="text"
                   required
                   autoComplete="username"
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-medium text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 sm:text-base"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 sm:py-3.5 sm:text-base"
                   placeholder={t("usernamePlaceholder")}
                   value={formData.username}
                   onChange={(e) =>
@@ -144,7 +144,7 @@ const Login = () => {
                   type={showPassword ? "text" : "password"}
                   required
                   autoComplete="current-password"
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 pr-12 text-sm font-medium tracking-wide text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 sm:text-base"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 pr-12 text-sm font-medium tracking-wide text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 sm:py-3.5 sm:text-base"
                   placeholder={t("passwordPlaceholder")}
                   value={formData.password}
                   onChange={(e) =>
@@ -176,7 +176,7 @@ const Login = () => {
             </div>
 
             {/* Remember & Forgot Space (Optional Layout Addition) */}
-            <div className="flex items-center justify-between pt-1 text-xs sm:text-sm">
+            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 pt-1 text-xs sm:text-sm">
               <label className="flex items-center gap-2 text-slate-500 cursor-pointer select-none">
                 <input type="checkbox" name="remember" className="h-4 w-4 rounded border-slate-300 accent-emerald-600 focus:ring-emerald-500" />
                 {t("rememberMe")}
@@ -188,7 +188,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className={`flex w-full items-center justify-center gap-2 rounded-xl py-4 text-sm font-bold text-white shadow-lg transition duration-150 hover:-translate-y-0.5 active:translate-y-0 sm:text-base ${
+              className={`flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold text-white shadow-lg transition duration-150 hover:-translate-y-0.5 active:translate-y-0 sm:py-4 sm:text-base ${
                 loading
                   ? "bg-slate-400 cursor-not-allowed shadow-none"
                   : "bg-emerald-600 shadow-emerald-600/20 hover:bg-emerald-700"

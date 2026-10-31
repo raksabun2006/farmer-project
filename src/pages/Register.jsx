@@ -124,21 +124,21 @@ const Register = () => {
             </div>
 
             {/* ផ្នែកខាងស្តាំ៖ Form ចុះឈ្មោះ */}
-            <div className="relative flex min-h-dvh w-full flex-col justify-start overflow-y-auto bg-white px-5 py-8 sm:px-10 sm:py-12 xl:justify-center xl:px-14">
+            <div className="relative flex min-h-dvh w-full flex-col justify-start overflow-y-auto bg-white px-4 py-6 sm:px-10 sm:py-12 xl:justify-center xl:px-14">
                 <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-emerald-50 xl:hidden" aria-hidden="true"></div>
                 <div className="pointer-events-none absolute -bottom-32 -left-24 h-64 w-64 rounded-full bg-lime-50 xl:hidden" aria-hidden="true"></div>
-                <div className="relative mx-auto w-full max-w-md space-y-7">
+                <div className="relative mx-auto w-full max-w-md space-y-6 sm:space-y-7">
                     
                     {/* Header */}
                     <div className="text-center xl:text-left">
-                        <div className="mb-5 flex items-center justify-center gap-3 xl:justify-start">
-                            <img src="/images/logo.png" alt={t("brand")} className="h-12 w-12 object-contain drop-shadow-sm" />
+                        <div className="mb-4 flex items-center justify-center gap-3 sm:mb-5 xl:justify-start">
+                            <img src="/images/logo.png" alt={t("brand")} className="h-10 w-10 object-contain drop-shadow-sm sm:h-12 sm:w-12" />
                             <div><p className="font-black text-emerald-800">{t("brand")}</p><p className="text-xs text-slate-400">{t("country")}</p></div>
                         </div>
-                        <h2 className="text-3xl font-black tracking-tight text-slate-800 sm:text-4xl">
+                        <h2 className="text-2xl font-black tracking-tight text-slate-800 sm:text-4xl">
                             {t("register")}
                         </h2>
-                        <p className="text-slate-500 text-sm mt-2 font-medium">
+                        <p className="mt-2 text-sm font-medium leading-6 text-slate-500">
                             {t("createAccountDescription")}
                         </p>
                     </div>
@@ -156,15 +156,15 @@ const Register = () => {
                     )}
 
                     {/* Form */}
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
                         
                         {/* Section 1: Account Information */}
-                        <div className="space-y-3">
+                        <div className="space-y-2 sm:space-y-3">
                             <h3 className="text-xs font-bold text-emerald-600 uppercase tracking-wider border-b border-slate-100 pb-1.5">
                                 {t("accountInformation")}
                             </h3>
                             
-                            <div className="space-y-3">
+                            <div className="space-y-2 sm:space-y-3">
                                 <div className="space-y-1">
                                     <label htmlFor="register-username" className="block text-sm font-bold text-slate-700">{t("username")} *</label>
                                     <input id="register-username" type="text" name="username" required minLength={3} maxLength={20} value={formData.username} onChange={handleChange} placeholder={t("usernamePlaceholder")} autoComplete="username" className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10" />
@@ -192,12 +192,12 @@ const Register = () => {
                         </div>
 
                         {/* Section 2: Personal Information */}
-                        <div className="space-y-3 pt-2">
+                        <div className="space-y-2 pt-1 sm:space-y-3 sm:pt-2">
                             <h3 className="text-xs font-bold text-emerald-600 uppercase tracking-wider border-b border-slate-100 pb-1.5">
                                 {t("personalInformation")}
                             </h3>
                             
-                            <div className="space-y-3">
+                            <div className="space-y-2 sm:space-y-3">
                                 <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
                                     <div className="space-y-1">
                                         <label className="block text-sm font-bold text-slate-700">{t("fullName")}</label>
